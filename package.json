@@ -1,0 +1,25 @@
+{
+  "name": "visual-dictionary-backend",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "seed": "node setupFirestore.js"
+  },
+  "dependencies": {
+    "@iamtraction/google-translate": "^2.0.1",
+    "@supabase/supabase-js": "^2.81.1",
+    "axios": "^1.13.2",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.2",
+    "firebase-admin": "^13.5.0",
+    "multer": "^2.0.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
