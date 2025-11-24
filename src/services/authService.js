@@ -10,9 +10,9 @@ if (!FIREBASE_API_KEY) {
 }
 
 // Create a new user with email and password
-export async function createUserService(email, password, name, nativeLang, preferredTargetLang = "auto") {
+export async function createUserService(email, password, name, avatarId, preferredTargetLang = "auto") {
     if (!email || !password) throw new Error("cretaUserService: email and password are required");
-    if (!name || !nativeLang) throw new Error("createUserService: name and nativeLang are required");
+    if (!name || !avatarId) throw new Error("createUserService: name and avatarId are required");
 
     // check if email already exists
     const userRef = db.collection("users").where("email", "==", email);
@@ -39,8 +39,9 @@ export async function createUserService(email, password, name, nativeLang, prefe
         email,
         createdAt: now,
         lastSeen: now,
-        nativeLang: nativeLang,
-        preferredTargetLang: preferredTargetLang || "auto",
+        //nativeLang: nativeLang,
+        avatarId: avatarId || 0,
+        //preferredTargetLang: preferredTargetLang || "auto",
     };
     console.log("Creating user profile: " + email + " - " + name);
 
@@ -173,6 +174,7 @@ export async function getUserProfileService(uid) {
     const userData = userSnap.data();
     const userName = userData.displayName;
     const userEmail = userData.email;
+    const userAvatarId = userData.avatarId;
 
     const listRef = userRef.collection("lists");
     const listSnap = await listRef.get();
@@ -182,5 +184,5 @@ export async function getUserProfileService(uid) {
     const captureSnap = await captureRef.get();
     const captureCount = captureSnap.size;
 
-    return { getUserProfile_ok: true, userName, userEmail, listCount, captureCount };
+    return { getUserProfile_ok: true, userName, userEmail, userAvatarId, listCount, captureCount };
 } // end getUserProfileService

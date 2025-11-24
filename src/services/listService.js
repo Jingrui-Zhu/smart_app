@@ -1,14 +1,8 @@
 // src/services/listService.js
-import { db } from "../config/firebase.js";
-
-// Helper functions for base64url encoding/decoding
-// used to create the shared code
-function base64urlEncode(str) {
-    return Buffer.from(String(str), "utf8").toString("base64url");
-}
-function base64urlDecode(s) {
-    return Buffer.from(String(s), "base64url").toString("utf8");
-}
+import { db, admin } from "../config/firebase.js";
+import crypto from "crypto";
+import dotenv from "dotenv";
+dotenv.config();
 
 export async function createUserListService(uid, listName) {
     if (!uid) throw new Error("createUserListService: uid is required");
@@ -224,7 +218,7 @@ export async function removeItemFromListService(uid, listId, wordId) {
     // update wordCount in list
     const now = new Date().toISOString();
     await listRef.update({
-        wordCount: db.FieldValue.increment(-1),
+        wordCount: admin.firestore.FieldValue.increment(-1),
         updatedAt: now
     });
     console.log("List wordCount updated.");
@@ -248,52 +242,84 @@ export async function updateListService(uid, listId, listName) {
 export async function createSharedListCodeService(uid, listId) {
     if (!uid) throw new Error("createSharedListCodeService: uid is required");
     if (!listId) throw new Error("createSharedListCodeService: listId is required");
+    // ensure list exists
+    const listRef = db.collection("users").doc(uid).collection("lists").doc(listId);
+    const listSnap = await listRef.get();
+    if (!listSnap.exists) throw new Error("createSharedListCodeService: List not found");
 
-    //const listRef = db.collection("users").doc(uid).collection("lists").doc(listId);
-    //await listRef.update({ visibility: "public", updatedAt: new Date().toISOString() });
+    // Generate a short random token (base64url) to use as shared code
+    // Ensure token is unique (retry a few times in case of collision)
+    let token = null;
+    const maxAttempts = 6;
+    let attempt = 0;
+    while (!token && attempt < maxAttempts) {
+        const candidate = crypto.randomBytes(6).toString("base64url");
+        // check for existing token
+        const existing = await db.collectionGroup("lists").where("sharedCode", "==", candidate).limit(1).get();
+        if (existing.empty) {
+            token = candidate;
+            break;
+        }
+        attempt++;
+    }
+    
+    if (!token) throw new Error("createSharedListCodeService: Unable to generate unique shared token");
+    const now = new Date().toISOString();
 
-    const a = base64urlEncode(uid);
-    const b = base64urlEncode(listId);
-    const sharedCode = `${a}_${b}`;
-    console.log(a + " - " + b + " => " + sharedCode);
-    return { createSharedListCode_ok: true, sharedCode };
+    // Mark list as public and persist shared code
+    await listRef.update({
+        visibility: "public",
+        sharedCode: token,
+        sharedAt: now,
+        updatedAt: now
+    });
+
+    // Build share URL if base URL configured
+    const baseUrl = process.env.APP_BASE_URL || null;
+    const sharePath = `/shared/list/${token}`;
+    const shareUrl = baseUrl ? `${baseUrl.replace(/\/$/, "")}${sharePath}` : sharePath;
+
+    return { createSharedListCode_ok: true, sharedCode: token, shareUrl };
 } // end createSharedListCodeService
-
-export async function decodeSharedListCodeService(sharedCode) {
-    if (!sharedCode || typeof sharedCode !== "string") throw new Error("decodeSharedListCodeService: invalid sharedCode");
-
-    const parts = sharedCode.split("_");
-    if (parts.length !== 2) throw new Error("decodeSharedListCodeService: Invalid sharedCode format");
-    const uid = base64urlDecode(parts[0]);
-    const listId = base64urlDecode(parts[1]);
-    console.log(uid + " - " + listId + " <= " + sharedCode);
-    return { uid, listId };
-} // end decodeSharedListCodeService
 
 export async function getSharedListService(sharedCode) {
     if (!sharedCode) throw new Error("getSharedListService: sharedCode is required");
 
-    // retrieve uid and listId from sharedCode
-    const { uid, listId } = await decodeSharedListCodeService(sharedCode);
-    if (!uid) throw new Error("getSharedListService: uid is required");
-    if (!listId) throw new Error("getSharedListService: listId is required");
+    // Token lookup: find list where `sharedCode` equals provided token
+    let uid = null;
+    let listId = null;
+    let listSnap = null;
+    let listRef = null;
 
-    // fetch the list and its items
-    const listRef = db.collection("users").doc(uid).collection("lists").doc(listId);
-    const listSnap = await listRef.get();
+    const q = await db.collectionGroup("lists").where("sharedCode", "==", sharedCode).limit(1).get();
+    if (q.empty) throw new Error("getSharedListService: Shared list not found");
+    const doc = q.docs[0];
+    listSnap = doc;
+    listId = doc.id;
+    // derive uid from path users/{uid}/lists/{listId}
+    const parts = doc.ref.path.split("/");
+    uid = parts.length >= 2 ? parts[1] : null;
+    listRef = db.collection("users").doc(uid).collection("lists").doc(listId);
+
     if (!listSnap.exists) throw new Error("getSharedListService: List not found");
+
+    const listData = listSnap.data();
+    // enforce public visibility
+    if (!listData || listData.visibility !== "public") {
+        throw new Error("getSharedListService: List is not public");
+    }
 
     const itemsSnap = await listRef.collection("items").get();
     const items = itemsSnap.docs.map(d => ({ itemId: d.id, ...d.data() }));
 
-    return { getSharedList_ok: true, ownerId: uid, listId, list: { id: listId, ...listSnap.data() }, items };
+    return { getSharedList_ok: true, ownerId: uid, listId, list: { id: listId, ...listData }, items };
 } // end getSharedListService
 
 export async function importSharedListService(uid, sharedCode) {
     if (!uid) throw new Error("importSharedListService: uid is required");
     if (!sharedCode) throw new Error("importSharedListService: code is required");
     const shared = await getSharedListService(sharedCode);
-    const { list, items, listId, ownerUid } = shared;
+    const { list, items, listId, ownerId } = shared;
 
     const newListId = `import_${listId}`;
     const newListRef = db.collection("users").doc(uid).collection("lists").doc(newListId);
@@ -307,7 +333,7 @@ export async function importSharedListService(uid, sharedCode) {
         listLanguage: list.listLanguage || [],
         isDefault: false,
         visibility: list.visibility || "private",
-        importedFrom: ownerUid,
+        importedFrom: ownerId,
         imported: true,
         importedAt: now,
         updatedAt: now,
