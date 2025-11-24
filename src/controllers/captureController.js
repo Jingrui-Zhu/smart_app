@@ -6,10 +6,7 @@ import { MAX_BYTES } from "../middleware/multerMiddleware.js";
 export const createCaptureHandler = async (req, res) => {
     try {
         const uid = req.user?.uid || null;
-
-        // extract ML metadata
         const { objectName, accuracy, targetLang } = req.body;
-        if (!objectName) return res.json({ error: "objectName is required" });
 
         // handle image
         let fileBuffer = null;

@@ -38,8 +38,6 @@ export const resetPassword = async (req, res) => {
   try {
     const uid = req.user?.uid;
     const { oldPassword, newPassword } = req.body;
-    if (!uid) return res.json({ ok: false, error: "Unauthorized" });
-    if (!oldPassword || !newPassword) return res.json({ ok: false, error: "oldPassword and newPassword are required" });
     const result = await authService.resetPasswordService(uid, oldPassword, newPassword);
     return res.json({ message: "Password reset successful", ...result });
   } catch (err) {
@@ -51,7 +49,6 @@ export const resetPassword = async (req, res) => {
 export const logout = async (req, res) => {
   try {
     const uid = req.user?.uid;
-    if (!uid) return res.json({ ok: false, error: "Unauthorized" });
     const result = await authService.logoutService(uid);
     return res.json({ message: "Logout successful", ...result });
   } catch (error) {
@@ -63,7 +60,6 @@ export const logout = async (req, res) => {
 export const getUserProfileHandler = async (req, res) => {
   try {
     const uid = req.user?.uid;
-    if (!uid) return res.json({ error: "Unauthorized" });
     const profile = await authService.getUserProfileService(uid);
     return res.json({ message: "User profile retrieved successfully", ...profile });
   } catch (error) {
