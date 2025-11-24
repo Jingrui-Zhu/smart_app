@@ -19,7 +19,7 @@ app.get("/", (req, res) => res.json({ message: "Visual Dictionary backend runnin
 
 app.use("/auth", authRouter);
 app.use("/translate", translationRouter);
-app.use("/capture", captureRouter);
+app.use("/captures", captureRouter);
 app.use("/flashcards", flashcardRouter);
 app.use("/lists", listRouter);
 
