@@ -10,7 +10,7 @@ if (!FIREBASE_API_KEY) {
 }
 
 // Create a new user with email and password
-export async function createUserService(email, password, name, avatarId, preferredTargetLang = "auto") {
+export async function createUserService(email, password, name, avatarId) {
     if (!email || !password) throw new Error("cretaUserService: email and password are required");
     if (!name || !avatarId) throw new Error("createUserService: name and avatarId are required");
 
@@ -19,7 +19,7 @@ export async function createUserService(email, password, name, avatarId, preferr
     const userSnap = await userRef.get();
     if (!userSnap.empty) throw new Error("User already exists");
 
-    // use Firebase Auth to create the user including the nacessary informarion
+    // use Firebase Auth to create the user including the necessary information
     let userRecord;
     try {
         userRecord = await auth.createUser({
@@ -65,11 +65,11 @@ export async function createUserService(email, password, name, avatarId, preferr
         listId: listId,
         listName: "favorite",
         description: " ",
-        listLanguage: [userDoc.nativeLang, userDoc.preferredTargetLang],
+        //listLanguage: [userDoc.nativeLang, userDoc.preferredTargetLang],
         isDefault: true,
         visibility: "private",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: now,
+        updatedAt: now,
         wordCount: 0
     };
     console.log("Creating user word list: ", listId);
@@ -78,7 +78,6 @@ export async function createUserService(email, password, name, avatarId, preferr
 
     return { createUser_ok: true, user: { uid: userDoc.uid, ...userDoc } };
 }// end createUserService
-
 
 // user login with email and password
 export async function loginWithPasswordService(email, password) {
