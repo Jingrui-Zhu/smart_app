@@ -6,12 +6,15 @@ import translationRouter from "./src/routes/translationRoutes.js";
 import captureRouter from "./src/routes/captureRoutes.js";
 import flashcardRouter from "./src/routes/flashcardRoutes.js";
 import listRouter from "./src/routes/listRoutes.js";
-
 dotenv.config();
-const app = express();
-app.use(cors());
-app.use(express.json());
 
+const app = express();
+app.use(cors({ origin: true }));
+app.use(express.json({ limit: "1mb" })); // tune for your payloads
+app.use(express.urlencoded({ extended: true }));
+
+// healthcheck
+app.get("/_healthz", (req, res) => res.sendStatus(200));
 app.get("/", (req, res) => res.json({ message: "Visual Dictionary backend running" }));
 
 app.use("/auth", authRouter);
