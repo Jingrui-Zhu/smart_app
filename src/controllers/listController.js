@@ -101,7 +101,6 @@ export const createSharedListHandler = async (req, res) => {
 export const getSharedListHandler = async (req, res) => {
     try {
         const { sharedCode } = req.params;
-        if (!sharedCode) return res.json({ error: "sharedCode is required" });
         const sharedList = await listService.getSharedListService(sharedCode);
         return res.json({ message: "Shared list retrieved successfully", ...sharedList });
     } catch (error) {

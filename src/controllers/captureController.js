@@ -5,7 +5,7 @@ import { MAX_BYTES } from "../middleware/multerMiddleware.js";
 // Accepts either multipart file (req.file) or JSON base64 (req.body.imageBase64)
 export const createCaptureHandler = async (req, res) => {
     try {
-        const uid = req.user?.uid || null;
+        const uid = req.user?.uid;
         const { objectName, accuracy, targetLang } = req.body;
 
         // handle image
@@ -60,7 +60,7 @@ export const getCaptureHandler = async (req, res) => {
 
 export const deleteCaptureHandler = async (req, res) => {
     try {
-        const uid = req.user?.uid || null;
+        const uid = req.user?.uid;
         const { captureId } = req.params;
         if (!captureId) return res.json({ error: "captureId required" });
         const deleted = await captureService.deleteCaptureService(captureId, uid);

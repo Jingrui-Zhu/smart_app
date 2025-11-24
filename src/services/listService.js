@@ -18,13 +18,13 @@ export async function createUserListService(uid, listName) {
     if (listSnap.exists) throw new Error("createUserListService: List with same name already exists");
 
     // create the list
-    const userData = userDocSnap.data();
+    //const userData = userDocSnap.data();
     const now = new Date().toISOString();
     const listDoc = {
         listId: listId,
         listName: listName,
         description: " ",
-        listLanguage: [userData.nativeLang, userData.preferredTargetLang],
+        //listLanguage: [userData.nativeLang, userData.preferredTargetLang],
         isDefault: false,
         visibility: "private",
         imported: false,
@@ -262,7 +262,7 @@ export async function createSharedListCodeService(uid, listId) {
         }
         attempt++;
     }
-    
+
     if (!token) throw new Error("createSharedListCodeService: Unable to generate unique shared token");
     const now = new Date().toISOString();
 
