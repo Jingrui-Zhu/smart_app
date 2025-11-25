@@ -109,6 +109,20 @@ export const getSharedListHandler = async (req, res) => {
     }
 } // end getSharedListHandler
 
+// Public variant of the shared-list handler (no auth). Separate function to avoid reusing
+// the same handler across multiple routes.
+export const getSharedListPublicHandler = async (req, res) => {
+    try {
+        const { sharedCode } = req.params;
+        if (!sharedCode) return res.status(400).json({ error: "sharedCode is required" });
+        const sharedList = await listService.getSharedListService(sharedCode);
+        return res.json({ message: "Shared list retrieved successfully", ...sharedList });
+    } catch (error) {
+        console.error("getSharedListPublic error:", error);
+        return res.status(404).json({ error: error.message || "Failed to get shared list" });
+    }
+} // end getSharedListPublicHandler
+
 export const importSharedListHandler = async (req, res) => {
     try {
         const uid = req.user?.uid || null;

@@ -73,6 +73,7 @@ async function main() {
       { key: "email", value: TEST_EMAIL },
       { key: "password", value: TEST_PASSWORD },
       { key: "captureId", value: "" },
+      { key: "wordId", value: "" },
       { key: "fcId", value: "" },
       { key: "listId", value: "" },
       { key: "shareCode", value: "" }
@@ -249,7 +250,7 @@ async function main() {
         { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
         { key: "Content-Type", value: "application/json" }
       ],
-      body: { mode: "raw", raw: JSON.stringify({ listId: "mylist123", name: "My Vocab" }) },
+      body: { mode: "raw", raw: JSON.stringify({ listName: "My Vocab" }) },
       url: { raw: `${baseUrl}/lists`, host: ["{{baseUrl}}"], path: ["lists"] },
     },
     event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.listId) pm.collectionVariables.set('listId', json.listId); } catch(e){} }"], type: "text/javascript" } }]
@@ -271,7 +272,7 @@ async function main() {
     request: {
       method: "GET",
       header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
-      url: { raw: `${baseUrl}/lists/{{listId}}`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}"] },
+      url: { raw: `${baseUrl}/lists/{{listId}}/items`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}", "items"] },
     }
   });
 
@@ -284,8 +285,8 @@ async function main() {
         { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
         { key: "Content-Type", value: "application/json" }
       ],
-      body: { mode: "raw", raw: JSON.stringify({ wordId: "id_seagull", captureId: "{{captureId}}" }) },
-      url: { raw: `${baseUrl}/lists/{{listId}}`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}"] },
+      body: { mode: "raw", raw: JSON.stringify({ wordId: "{{wordId}}", captureId: "{{captureId}}" }) },
+      url: { raw: `${baseUrl}/lists/{{listId}}/items`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}", "items"] },
     }
   });
 
@@ -309,7 +310,7 @@ async function main() {
     request: {
       method: "DELETE",
       header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
-      url: { raw: `${baseUrl}/lists/{{listId}}/{{captureId}}`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}", "{{captureId}}"] },
+      url: { raw: `${baseUrl}/lists/{{listId}}/items/{{wordId}}`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}", "items", "{{wordId}}"] },
     }
   });
 
@@ -322,7 +323,7 @@ async function main() {
         { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
         { key: "Content-Type", value: "application/json" }
       ],
-      body: { mode: "raw", raw: JSON.stringify({ listId: "{{listId}}" }) },
+      body: { mode: "raw", raw: JSON.stringify({ listId: "{{listId}}", wordId: "{{wordId}}" , captureId: "{{captureId}}" }) },
       url: { raw: `${baseUrl}/lists/share`, host: ["{{baseUrl}}"], path: ["lists", "share"] } 
     },
     event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.code) pm.collectionVariables.set('shareCode', json.code); } catch(e){} }"], type: "text/javascript" } }]
@@ -335,6 +336,15 @@ async function main() {
       method: "GET",
       header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
       url: { raw: `${baseUrl}/lists/shared/{{shareCode}}`, host: ["{{baseUrl}}"], path: ["lists", "shared", "{{shareCode}}"] }  
+    }
+  });
+
+  collection.item.push({
+    name: "Lists: View Shared List (public)",
+    request: {
+      method: "GET",
+      header: [],
+      url: { raw: `${baseUrl}/shared/list/{{shareCode}}`, host: ["{{baseUrl}}"], path: ["shared", "list", "{{shareCode}}"] },
     }
   });
 
@@ -363,8 +373,9 @@ async function main() {
       { key: "firebaseApiKey", value: firebaseApiKey, enabled: true },
       { key: "idToken", value: idToken, enabled: true },
       { key: "captureId", value: "", enabled: true },
+      { key: "wordId", value: "", enabled: true },
       { key: "fcId", value: "", enabled: true },
-      { key: "listId", value: "mylist123", enabled: true },
+      { key: "listId", value: "", enabled: true },
       { key: "shareCode", value: "", enabled: true }
     ]
   };

@@ -6,6 +6,7 @@ import translationRouter from "./src/routes/translationRoutes.js";
 import captureRouter from "./src/routes/captureRoutes.js";
 import flashcardRouter from "./src/routes/flashcardRoutes.js";
 import listRouter from "./src/routes/listRoutes.js";
+import { getSharedListPublicHandler } from "./src/controllers/listController.js";
 dotenv.config();
 
 const app = express();
@@ -22,6 +23,9 @@ app.use("/translate", translationRouter);
 app.use("/captures", captureRouter);
 app.use("/flashcards", flashcardRouter);
 app.use("/lists", listRouter);
+
+// Public endpoint to retrieve a shared list by token (no auth required)
+app.get("/shared/list/:sharedCode", getSharedListPublicHandler);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
