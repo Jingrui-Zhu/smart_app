@@ -162,7 +162,7 @@ async function main() {
       },
       url: { raw: `${baseUrl}/captures`, host: ["{{baseUrl}}"], path: ["captures"] }
     },
-    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.capture && json.capture.captureId) pm.collectionVariables.set('captureId', json.capture.captureId); } catch(e){} }"], type: "text/javascript" } }]
+    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.capture && json.capture.captureId) pm.collectionVariables.set('captureId', json.capture.captureId); pm.collectionVariables.set('wordId', json.capture.wordId); } catch(e){} }"], type: "text/javascript" } }]
   });
 
   // list captures
@@ -207,7 +207,9 @@ async function main() {
       body: { mode: "raw", raw: JSON.stringify({ captureId: "{{captureId}}", description: "others" }) },
       url: { raw: `${baseUrl}/flashcards`, host: ["{{baseUrl}}"], path: ["flashcards"] },
     },
-    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); const fc = json.flashcard || json; if (fc && fc.fcId) pm.collectionVariables.set('fcId', fc.fcId); } catch(e){} }"], type: "text/javascript" } }]
+    event: [{ listen: "test", script: { exec: [
+      "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); const fc = json.flashcard || json; if (fc && fc.fcId) pm.collectionVariables.set('fcId', fc.fcId); } catch(e){} }"
+    ], type: "text/javascript" } }]
   });
 
   // list user flashcards
