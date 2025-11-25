@@ -11,8 +11,8 @@ router.post("/signup", authService.signup);
 router.post("/login", authService.login);
 // verify token - /POST /auth/verify
 router.post("/verify", authService.verify);
-// reset password requiring authentication - /POST /auth/resetPassword
-router.post("/resetPassword", requireAuth, authService.resetPassword);
+// reset password requiring authentication - /POST /auth/change-password
+router.post("/change-password", requireAuth, authService.resetPassword);
 // logout - /POST /auth/logout
 router.post("/logout", requireAuth, authService.logout);
 

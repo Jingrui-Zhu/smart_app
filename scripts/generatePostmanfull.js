@@ -1,0 +1,386 @@
+// scripts/generatePostmanFull.js
+// CommonJS script: reads .env, signs in to Firebase REST to obtain idToken,
+// and generates postman/SmartAppCollection.json + postman/SmartAppEnvironment.json
+// Usage: node scripts/generatePostmanFull.js
+
+import fs from "fs";
+import path from "path";
+import axios from "axios";
+import readline from "readline";
+import dotenv from "dotenv";
+import { url } from "inspector";
+dotenv.config();
+
+const OUT_DIR = path.join(process.cwd(), "postman");
+if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
+
+// Example image path (the file you uploaded)
+const exampleImagePath = "C:\\Users\\zhuji\\OneDrive\\Desktop\\seagull-perched-on-rock-421015772.jpg";
+//const exampleImagePath = "/mnt/data/A_diagram_presents_a_relational_database_schema_on.png";
+
+//Prompt helper in case a required value is missing in .env
+function ask(prompt) {
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => rl.question(prompt, (ans) => { rl.close(); resolve(ans); }));
+}
+
+async function main() {
+  console.log("Smart App — Postman generator (reads .env)\n");
+
+  // Read from .env first, otherwise prompt
+  const envBaseUrl = process.env.APP_BASE_URL;
+  const envApiKey = process.env.FIREBASE_API_KEY;
+
+  const baseUrl = envBaseUrl || (await ask(`Base URL (APP_BASE_URL) [none]: `));
+  const firebaseApiKey = envApiKey || (await ask("Firebase Web API Key (FIREBASE_API_KEY): "));
+
+  // Use the test account credentials you gave
+  const TEST_EMAIL = "test.user1@example.it";
+  const TEST_PASSWORD = "test123";
+
+  if (!baseUrl || !firebaseApiKey) {
+    console.error("\nERROR: Missing APP_BASE_URL or FIREBASE_API_KEY. Put them in .env or provide now.");
+    process.exit(1);
+  }
+
+  console.log("Signing in to Firebase to obtain idToken (test account)...");
+  let idToken = "";
+  try {
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebaseApiKey}`;
+    const resp = await axios.post(url, {
+      email: TEST_EMAIL,
+      password: TEST_PASSWORD,
+      returnSecureToken: true
+    }, { timeout: 10000 });
+    idToken = resp.data.idToken;
+    console.log("Obtained idToken (truncated):", idToken ? idToken.slice(0, 30) + "..." : "(empty)");
+  } catch (err) {
+    console.error("Failed to sign in to Firebase REST API. Check your API key and credentials.");
+    console.error(err.response?.data || err.message);
+    process.exit(1);
+  }
+
+  // Build Postman collection object
+  const collection = {
+    info: {
+      name: "Smart App Backend - Full Automated",
+      description: "Automatically generated Postman collection for Smart App (all endpoints except /auth/verify and /translate).",
+      schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    variable: [
+      { key: "baseUrl", value: baseUrl },
+      { key: "idToken", value: idToken },
+      { key: "email", value: TEST_EMAIL },
+      { key: "password", value: TEST_PASSWORD },
+      { key: "captureId", value: "" },
+      { key: "fcId", value: "" },
+      { key: "listId", value: "" },
+      { key: "shareCode", value: "" }
+    ],
+    item: []
+  };
+
+  // -------------------AUTH
+  // signup 
+  collection.item.push({
+    name: "Auth: Signup",
+    request: {
+      method: "POST",
+      header: [{ key: "Content-Type", value: "application/json" }],
+      body: { mode: "raw", raw: JSON.stringify({ email: "{{email}}", password: "{{password}}", name: "Demo User", avatarId: 2 }) },
+      url: { raw: `${baseUrl}/auth/signup`, host: ["{{baseUrl}}"], path: ["auth", "signup"] }
+    },
+    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201) console.log('Signup OK');"], type: "text/javascript" } }]
+  });
+
+  // login (manual)
+  collection.item.push({
+    name: "Auth: Login (manual)",
+    request: {
+      method: "POST",
+      header: [{ key: "Content-Type", value: "application/json" }],
+      body: { mode: "raw", raw: JSON.stringify({ email: "{{email}}", password: "{{password}}" }) },
+      url: { raw: `${baseUrl}/auth/login`, host: ["{{baseUrl}}"], path: ["auth", "login"] }
+    },
+    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 200) { try { const json = pm.response.json(); if (json.idToken) pm.collectionVariables.set('idToken', json.idToken); } catch(e){} }"], type: "text/javascript" } }]
+  });
+
+  // get profile
+  collection.item.push({
+    name: "Auth: Get profile",
+    request: {
+      method: "GET",
+      header: [{ key: "Content-Type", value: "Bearer {{idToken}}", type: "text" }],
+      url: { raw: `${baseUrl}/auth/profile`, host: ["{{baseUrl}}"], path: ["auth", "profile"] }
+    }
+  })
+
+  // change-password
+  collection.item.push({
+    name: "Auth: Change Password",
+    request: {
+      method: "POST",
+      header: [
+        { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
+        { key: "Content-Type", value: "application/json" }
+      ],
+      body: { mode: "raw", raw: JSON.stringify({ oldPassword: TEST_PASSWORD, newPassword: "test456" }) },
+      url: { raw: `${baseUrl}/auth/change-password`, host: ["{{baseUrl}}"], path: ["auth", "change-password"] }
+    }
+  });
+
+  // logout
+  collection.item.push({
+    name: "Auth: Logout",
+    request: {
+      method: "POST",
+      header: [
+        { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
+        { key: "Content-Type", value: "application/json" }
+      ],
+      body: { mode: "raw", raw: JSON.stringify({ saveData: { lastOpenScreen: "vocab" } }) },
+      url: { raw: `${baseUrl}/auth/logout`, host: ["{{baseUrl}}"], path: ["auth", "logout"] }
+    }
+  });
+
+  // ---------------------CAPTURES
+  // create and translate capture
+  collection.item.push({
+    name: "Captures: Create and translate capture",
+    request: {
+      method: "POST",
+      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
+      body: {
+        mode: "formdata",
+        formdata: [
+          { key: "image", type: "file", src: exampleImagePath },
+          { key: "objectName", value: "seagull", type: "text" },
+          { key: "accuracy", value: "0.95", type: "text" },
+          { key: "targetLang", value: "it", type: "text" }
+        ]
+      },
+      url: { raw: `${baseUrl}/captures`, host: ["{{baseUrl}}"], path: ["captures"] }
+    },
+    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.capture && json.capture.captureId) pm.collectionVariables.set('captureId', json.capture.captureId); } catch(e){} }"], type: "text/javascript" } }]
+  });
+
+  // list captures
+  collection.item.push({
+    name: "Captures: List Captures",
+    request: {
+      method: "GET",
+      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
+      url: { raw: `${baseUrl}/captures`, host: ["{{baseUrl}}"], path: ["captures"] }
+    }
+  });
+
+  // fetch a capture by id
+  collection.item.push({
+    name: "Captures: Get Capture by Id",
+    request: {
+      method: "GET",
+      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
+      url: { raw: `${baseUrl}/captures/{{captureId}}`, host: ["{{baseUrl}}"], path: ["captures", "{{captureId}}"] }
+    }
+  });
+
+  // remove a capture by id
+  collection.item.push({
+    name:"Captures: Delete Capture",
+    request:{
+      method:"DELETE",
+      header:[{key:"Authorization", value:"Bearer {{idToken}}", type:"text"}],
+      url:{raw: `${baseUrl}/captures/{{captureId}}`, host:["{{baseUrl}}"], path:["captures", "{{captureId}}"]},
+    }
+  })  
+  // -------------------------FLASHCARDS
+  // create a flashcard
+  collection.item.push({
+    name: "Flashcards: Create Flashcard",
+    request: {
+      method: "POST",
+      header: [
+        { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
+        { key: "Content-Type", value: "application/json" }
+      ],
+      body: { mode: "raw", raw: JSON.stringify({ captureId: "{{captureId}}", description: "others" }) },
+      url: { raw: `${baseUrl}/flashcards`, host: ["{{baseUrl}}"], path: ["flashcards"] },
+    },
+    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); const fc = json.flashcard || json; if (fc && fc.fcId) pm.collectionVariables.set('fcId', fc.fcId); } catch(e){} }"], type: "text/javascript" } }]
+  });
+
+  // list user flashcards
+  collection.item.push({
+    name: "Flashcards: List User Flashcards",
+    request: {
+      method: "GET",
+      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
+      url: { raw: `${baseUrl}/flashcards`, host: ["{{baseUrl}}"], path: ["flashcards"] }
+    },
+  });
+
+  // fetch a flashcard by id
+  collection.item.push({
+    name: "Flashcards: Get Flashcard by Id",
+    request: {
+      method: "GET",
+      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
+      url: { raw: `${baseUrl}/flashcards/{{fcId}}`, host: ["{{baseUrl}}"], path: ["flashcards", "{{fcId}}"] },
+    }
+  });
+
+  // delete a flashcard by id
+  collection.item.push({
+    name: "Flashcards: Delete Flashcard",
+    request: {
+      method: "DELETE",
+      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
+      url: { raw: `${baseUrl}/flashcards/{{fcId}}`, host: ["{{baseUrl}}"], path: ["flashcards", "{{fcId}}"] },
+    }
+  });
+
+  // -------------------------LISTS
+  // create a list
+  collection.item.push({
+    name: "Lists: Create List",
+    request: {
+      method: "POST",
+      header: [
+        { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
+        { key: "Content-Type", value: "application/json" }
+      ],
+      body: { mode: "raw", raw: JSON.stringify({ listId: "mylist123", name: "My Vocab" }) },
+      url: { raw: `${baseUrl}/lists`, host: ["{{baseUrl}}"], path: ["lists"] },
+    },
+    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.listId) pm.collectionVariables.set('listId', json.listId); } catch(e){} }"], type: "text/javascript" } }]
+  });
+
+  // list user lists
+  collection.item.push({
+    name: "Lists: List User Lists",
+    request: {
+      method: "GET",
+      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
+      url: { raw: `${baseUrl}/lists`, host: ["{{baseUrl}}"], path: ["lists"] },
+    }
+  });
+
+  // fetch a list by id
+  collection.item.push({
+    name: "Lists: Get List by Id",
+    request: {
+      method: "GET",
+      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
+      url: { raw: `${baseUrl}/lists/{{listId}}`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}"] },
+    }
+  });
+
+  // add item to list
+  collection.item.push({
+    name: "Lists: Add Item to List",
+    request: {
+      method: "POST",
+      header: [
+        { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
+        { key: "Content-Type", value: "application/json" }
+      ],
+      body: { mode: "raw", raw: JSON.stringify({ wordId: "id_seagull", captureId: "{{captureId}}" }) },
+      url: { raw: `${baseUrl}/lists/{{listId}}`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}"] },
+    }
+  });
+
+  // update list details
+  collection.item.push({
+    name: "Lists: Update List",
+    request: {
+      method: "PUT",
+      header: [
+        { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
+        { key: "Content-Type", value: "application/json" }
+      ],
+      body: { mode: "raw", raw: JSON.stringify({ listName: "My Vocab Updated" }) },
+      url: { raw: `${baseUrl}/lists/{{listId}}`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}"] },
+    }
+  });
+
+  // delete an item from a list
+  collection.item.push({
+    name: "Lists: Delete Item from List",
+    request: {
+      method: "DELETE",
+      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
+      url: { raw: `${baseUrl}/lists/{{listId}}/{{captureId}}`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}", "{{captureId}}"] },
+    }
+  });
+
+  // create a shared list
+  collection.item.push({
+    name: "Lists: Create Share Code",
+    request: {
+      method: "POST",
+      header: [
+        { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
+        { key: "Content-Type", value: "application/json" }
+      ],
+      body: { mode: "raw", raw: JSON.stringify({ listId: "{{listId}}" }) },
+      url: { raw: `${baseUrl}/lists/share`, host: ["{{baseUrl}}"], path: ["lists", "share"] } 
+    },
+    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.code) pm.collectionVariables.set('shareCode', json.code); } catch(e){} }"], type: "text/javascript" } }]
+  });
+
+  // view the shared list
+  collection.item.push({
+    name: "Lists: View Shared List",
+    request: {
+      method: "GET",
+      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
+      url: { raw: `${baseUrl}/lists/shared/{{shareCode}}`, host: ["{{baseUrl}}"], path: ["lists", "shared", "{{shareCode}}"] }  
+    }
+  });
+
+  // import the shared list
+  collection.item.push({
+    name: "Lists: Import Shared List",
+    request: {
+      method: "POST",
+      header: [
+        { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
+        { key: "Content-Type", value: "application/json" }
+      ],
+      body: { mode: "raw", raw: JSON.stringify({ sharedCode: "{{shareCode}}" }) },
+      url: { raw: `${baseUrl}/lists/import`, host: ["{{baseUrl}}"], path: ["lists", "import"] } 
+    }
+  });
+
+  // Build environment
+  const environment = {
+    id: "smart-app-env-" + Date.now(),
+    name: "Smart App Auto Environment",
+    values: [
+      { key: "baseUrl", value: baseUrl, enabled: true },
+      { key: "email", value: TEST_EMAIL, enabled: true },
+      { key: "password", value: TEST_PASSWORD, enabled: true },
+      { key: "firebaseApiKey", value: firebaseApiKey, enabled: true },
+      { key: "idToken", value: idToken, enabled: true },
+      { key: "captureId", value: "", enabled: true },
+      { key: "fcId", value: "", enabled: true },
+      { key: "listId", value: "mylist123", enabled: true },
+      { key: "shareCode", value: "", enabled: true }
+    ]
+  };
+
+  // Write files
+  const colPath = path.join(OUT_DIR, "SmartAppCollection.json");
+  const envPath = path.join(OUT_DIR, "SmartAppEnvironment.json");
+  fs.writeFileSync(colPath, JSON.stringify(collection, null, 2));
+  fs.writeFileSync(envPath, JSON.stringify(environment, null, 2));
+
+  // README
+  const readme = `Smart App — Postman files\n\nFiles created:\n - ${colPath}\n - ${envPath}\n\nImport both into Postman (File -> Import), select the environment, then run the requests.\n\nThe script signed in to Firebase and saved an idToken into the environment variable "idToken". If you want to refresh the token, run the "Auth: Login (manual)" request in Postman (it will update idToken automatically).\n\nExample file used for multipart upload (Create Capture): ${exampleImagePath}\n`;
+  fs.writeFileSync(path.join(OUT_DIR, "README.md"), readme);
+
+  console.log("\nDone. Files written to:", OUT_DIR);
+  console.log("Import SmartAppCollection.json and SmartAppEnvironment.json into Postman.");
+}
+
+main().catch(err => { console.error(err); process.exit(1); });

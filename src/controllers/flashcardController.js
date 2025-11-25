@@ -19,13 +19,25 @@ export const createFlashcardHandler = async (req, res) => {
 export const getUserFlashcardsHandler = async (req, res) => {
     try {
         const uid = req.user?.uid;
-        const items = await flashcardService.getUserFlashcardsService(uid);
+        const { fcId } = req.params;
+        const items = await flashcardService.getUserFlashcardsService(uid, fcId);
         return res.json({ message: "User flashcards retrieved", ...items });
     } catch (err) {
         console.error("listUserFlashcards error:", err);
         return res.json({ error: err.message || "Failed to list flashcards" });
     }
 } // end getUserFlashcardsHandler
+
+export const getAllUserFlashcardsHandler = async(req, res) =>{
+    try {
+        const uid = req.user?.uid;
+        const items = await flashcardService.getAllUserFlashcardsService(uid);
+        return res.json({ message: "All user flashcards retrieved", ...items });
+    } catch (err) {
+        console.error("getAllUserFlashcards error:", err);
+        return res.json({ error: err.message || "Failed to get all flashcards" });
+    }
+}// end getAllUserFlashcardsHandler
 
 export const deleteUserFlashcardHandler = async (req, res) => {
     try {

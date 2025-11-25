@@ -1,25 +1,13 @@
 //setup Firestore
 import admin from "firebase-admin";
-import { readFileSync } from "fs";
-import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import dotenv from "dotenv";
+import loadServiceAccount from "../src/services/loadServiceAccount.js";
 dotenv.config();
-
-// Load service account credentials
-function getServiceAccount() {
-  if (process.env.SERVICE_ACCOUNT_JSON) {
-    return JSON.parse(process.env.SERVICE_ACCOUNT_JSON);
-  }
-  const filePath = process.env.GOOGLE_APPLICATION_CREDENTIALS || path.join(process.cwd(), "serviceAccountKey.json");
-  if (!filePath) throw new Error("No service account configured.");
-  return JSON.parse(readFileSync(filePath, "utf8"));
-}
-
 
 // populate the firastore database with demo data
 async function main() {
-  const keyJson = getServiceAccount();
+  const keyJson = loadServiceAccount();
   admin.initializeApp({
     credential: admin.credential.cert(keyJson),
     storageBucket: `${keyJson.project_id}.appspot.com`

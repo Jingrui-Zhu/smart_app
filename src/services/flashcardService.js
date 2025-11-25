@@ -39,14 +39,23 @@ export async function createFlashcardService(captureId, uid, description = null)
     return { createFlashcard_ok: true, ...fcDoc };
 }// end createFlashcardService
 
-export async function getUserFlashcardsService(uid) {
-    if (!uid) { throw new Error("getUserFlashcardsService: uid required"); }
+export async function getUserFlashcardsService(uid, fcId) {
+    if (!uid) throw new Error("getUserFlashcardsService: uid required");
+    if (!fcId) throw new Error("getUserFlashcardsService: fcId required");
+
+    const flashcardRef = db.collection("users").doc(uid).collection("flashcards").doc(fcId);
+    const snap = await flashcardRef.get();
+    return { getFlashcard_ok: true, ...snap.data() };
+}// end getUserFlashcardsService
+
+export async function getAllUserFlashcardsService(uid){
+    if (!uid) { throw new Error("getAllUserFlashcardsService: uid required"); }
 
     const snap = await db.collection("users").doc(uid).collection("flashcards").get();
     const items = snap.docs.map(d => ({ ...d.data() }));
-    console.log("Retrieved flashcards for user: ", uid, " - count: ", items.length);
-    return { getFlashcard_ok: true, itemCount: items.length, ...items };
-}// end getUserFlashcardsService
+    console.log("Retrieved all flashcards for user: ", uid, " - count: ", items.length);
+    return { getAllFlashcards_ok: true, itemCount: items.length, ...items };
+} // end getAllUserFlashcardsService
 
 export async function deleteUserFlashcardService(uid, fcId) {
     if (!uid) { throw new Error("deleteUserFlashcardService: uid required"); }

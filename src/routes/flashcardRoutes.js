@@ -8,8 +8,10 @@ const router = express.Router();
 // Create a flashcard from a capture (owner-only) - POST /flashcards
 router.post("/", requireAuth, flashcardService.createFlashcardHandler);
 
-// List user's flashcards - GET /flashcards
-router.get("/", requireAuth, flashcardService.getUserFlashcardsHandler);
+// List user's flashcards - GET /flashcards/fcId
+router.get("/:fcId", requireAuth, flashcardService.getUserFlashcardsHandler);
+// List all user's flashcards - GET /flashcards
+router.get("/", requireAuth, flashcardService.getAllUserFlashcardsHandler);
 
 // Delete a user's flashcard - DELETE /flashcards/:fcId
 router.delete("/:fcId", requireAuth, flashcardService.deleteUserFlashcardHandler);

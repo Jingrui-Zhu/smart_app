@@ -4,4 +4,6 @@ serviceAccountKey.json
 npm-debug.log
 firebase_sa.b64
 .DS_Store
+scripts/
+postman/
 .vscode/

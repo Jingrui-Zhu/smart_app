@@ -92,17 +92,7 @@ export async function createCaptureService(uid, fileBuffer = null, imageBase64 =
     const updatedSnap = await userRef.collection("captures").doc(captureId).get();
     const updatedCapture = updatedSnap.data();
 
-    // exclude large field from the returned object
-    const excludeKey = "imageBase64";
-
-    function omit(obj, key) {
-        const { [key]: _omit, ...rest } = obj || {};
-        return rest;
-    }
-
-    const captureItem = omit(updatedCapture, excludeKey);
-
-    return { createCapture_ok: true, captureItem: { captureId: captureItem.captureId, ...captureItem } };
+    return { createCapture_ok: true, ...updatedCapture};
 }// end createCaptureService
 
 export async function getCaptureService(captureId, uid) {

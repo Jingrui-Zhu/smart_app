@@ -1,0 +1,706 @@
+{
+  "info": {
+    "name": "Smart App Backend - Full Automated",
+    "description": "Automatically generated Postman collection for Smart App (all endpoints except /auth/verify and /translate).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://smart-app-u3of.onrender.com/"
+    },
+    {
+      "key": "idToken",
+      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGVtbyB1c2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQwODY4NjEsInVzZXJfaWQiOiJya3pJWFNZYUNWYkRwdEsxWnNZYzl2TnVIRkEyIiwic3ViIjoicmt6SVhTWWFDVmJEcHRLMVpzWWM5dk51SEZBMiIsImlhdCI6MTc2NDA4Njg2MSwiZXhwIjoxNzY0MDkwNDYxLCJlbWFpbCI6InRlc3QudXNlcjFAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXIxQGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.ABHR8IUYHoqqV35Nb4RcaBOq6BOjFQeo21LivnRlgvhKgDQL9OF-9E-_-k63ABnVai4_DhcnWUOZ8rZ81PE3yiF80deT5DZfoqw2JM-3aw1aTYWdMFcUtpxTuK-qAXh6SvnOUj3-Ag8SGY-V62B01ZoIqWvjgo1yoonBcPoGdGZTNeBvPZ1FBqPKCGhbgzO73nfii5EA1qPjZW6Wyza402oZtSFLdmpS3O_EbY6yM00Cu-tEl7p-DspH_VLXXQzUXdgb0eF5ULsWmcB52_jCV_tLMm94nkr267Bj9lGYI9gJGWgfIvT5egzw8_9izbc0NjV1h5Hl0BAy3bK9FHxaJA"
+    },
+    {
+      "key": "email",
+      "value": "test.user1@example.it"
+    },
+    {
+      "key": "password",
+      "value": "test123"
+    },
+    {
+      "key": "captureId",
+      "value": ""
+    },
+    {
+      "key": "fcId",
+      "value": ""
+    },
+    {
+      "key": "listId",
+      "value": ""
+    },
+    {
+      "key": "shareCode",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth: Signup",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"{{email}}\",\"password\":\"{{password}}\",\"name\":\"Demo User\",\"avatarId\":2}"
+        },
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//auth/signup",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "signup"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) console.log('Signup OK');"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth: Login (manual)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"{{email}}\",\"password\":\"{{password}}\"}"
+        },
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) { try { const json = pm.response.json(); if (json.idToken) pm.collectionVariables.set('idToken', json.idToken); } catch(e){} }"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth: Get profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//auth/profile",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "profile"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Auth: Change Password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"oldPassword\":\"test123\",\"newPassword\":\"test456\"}"
+        },
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//auth/change-password",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "change-password"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Auth: Logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"saveData\":{\"lastOpenScreen\":\"vocab\"}}"
+        },
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "logout"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Captures: Create and translate capture",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "image",
+              "type": "file",
+              "src": "C:\\Users\\zhuji\\OneDrive\\Desktop\\seagull-perched-on-rock-421015772.jpg"
+            },
+            {
+              "key": "objectName",
+              "value": "seagull",
+              "type": "text"
+            },
+            {
+              "key": "accuracy",
+              "value": "0.95",
+              "type": "text"
+            },
+            {
+              "key": "targetLang",
+              "value": "it",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//captures",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "captures"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.capture && json.capture.captureId) pm.collectionVariables.set('captureId', json.capture.captureId); } catch(e){} }"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Captures: List Captures",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//captures",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "captures"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Captures: Get Capture by Id",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//captures/{{captureId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "captures",
+            "{{captureId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Captures: Delete Capture",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//captures/{{captureId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "captures",
+            "{{captureId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Flashcards: Create Flashcard",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"captureId\":\"{{captureId}}\",\"description\":\"others\"}"
+        },
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//flashcards",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "flashcards"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); const fc = json.flashcard || json; if (fc && fc.fcId) pm.collectionVariables.set('fcId', fc.fcId); } catch(e){} }"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flashcards: List User Flashcards",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//flashcards",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "flashcards"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Flashcards: Get Flashcard by Id",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//flashcards/{{fcId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "flashcards",
+            "{{fcId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Flashcards: Delete Flashcard",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//flashcards/{{fcId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "flashcards",
+            "{{fcId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Lists: Create List",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"listId\":\"mylist123\",\"name\":\"My Vocab\"}"
+        },
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//lists",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lists"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.listId) pm.collectionVariables.set('listId', json.listId); } catch(e){} }"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lists: List User Lists",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//lists",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lists"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Lists: Get List by Id",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//lists/{{listId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lists",
+            "{{listId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Lists: Add Item to List",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"wordId\":\"id_seagull\",\"captureId\":\"{{captureId}}\"}"
+        },
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//lists/{{listId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lists",
+            "{{listId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Lists: Update List",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"listName\":\"My Vocab Updated\"}"
+        },
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//lists/{{listId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lists",
+            "{{listId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Lists: Delete Item from List",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//lists/{{listId}}/{{captureId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lists",
+            "{{listId}}",
+            "{{captureId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Lists: Create Share Code",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"listId\":\"{{listId}}\"}"
+        },
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//lists/share",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lists",
+            "share"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.code) pm.collectionVariables.set('shareCode', json.code); } catch(e){} }"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lists: View Shared List",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//lists/shared/{{shareCode}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lists",
+            "shared",
+            "{{shareCode}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Lists: Import Shared List",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"sharedCode\":\"{{shareCode}}\"}"
+        },
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com//lists/import",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lists",
+            "import"
+          ]
+        }
+      }
+    }
+  ]
+}

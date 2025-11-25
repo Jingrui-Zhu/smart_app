@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "seed": "node setupFirestore.js"
+    "seed": "node setupFirestore.js",
+    "setup-postman": "node scripts/generatePostmanFull.js"
   },
   "dependencies": {
     "@iamtraction/google-translate": "^2.0.1",
