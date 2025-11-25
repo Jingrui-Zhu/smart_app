@@ -1,6 +1,7 @@
 // src/services/listService.js
 import { db, admin } from "../config/firebase.js";
 import crypto from "crypto";
+import { create } from "domain";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -248,56 +249,51 @@ export async function createSharedListCodeService(uid, listId) {
   if (!listSnap.exists) throw new Error("createSharedListCodeService: List not found");
 
   // Generate a short random token (base64url) to use as shared code
-  // Ensure token is unique (retry a few times in case of collision)
-  let token = null;
-  const maxAttempts = 6;
-  let attempt = 0;
-  while (!token && attempt < maxAttempts) {
-    const candidate = crypto.randomBytes(6).toString("base64url");
-    // check for existing token
-    const existing = await db.collectionGroup("lists").where("sharedCode", "==", candidate).limit(1).get();
-    if (existing.empty) {
-      token = candidate;
-      break;
-    }
-    attempt++;
-  }
+  const token = crypto.randomBytes(6).toString("base64url");
 
   if (!token) throw new Error("createSharedListCodeService: Unable to generate unique shared token");
-  const now = new Date().toISOString();
 
-  // Mark list as public and persist shared code
-  await listRef.update({
-    visibility: "public",
-    sharedCode: token,
-    sharedAt: now,
-    updatedAt: now
-  });
-
-  // Build share URL if base URL configured
+  // Build share URL 
   const baseUrl = process.env.APP_BASE_URL || null;
   const sharePath = `/shared/list/${token}`;
   const shareUrl = baseUrl ? `${baseUrl.replace(/\/$/, "")}${sharePath}` : sharePath;
 
-  return { createSharedListCode_ok: true, sharedCode: token, shareUrl };
+  const now = new Date().toISOString();
+  // Mark list as public and persist shared code
+  const sharedId = `share_${token}_${listId}`;
+  const sharedDoc = {
+    sharedId: sharedId,
+    sharedCode: token,
+    shareURL: shareUrl,
+    ownerId: uid,
+    listId: listId,
+    createdAt: now,
+  }
+  console.log("Creating shared list code: ", sharedId);
+  await db.collection("sharedLists").doc(sharedId).set(sharedDoc);
+  console.log("Shared list code created.");
+  await listRef.update({ visibility: "public", updatedAt: now });
+  console.log("List visibility updated to public.");
+
+  return { createSharedListCode_ok: true, ...sharedDoc };
 } // end createSharedListCodeService
 
 export async function getSharedListService(sharedCode) {
   if (!sharedCode) throw new Error("getSharedListService: sharedCode is required");
 
-  // Token lookup: find list where `sharedCode` equals provided token
   let uid = null;
   let listId = null;
   let listSnap = null;
   let listRef = null;
 
-  const q = await db.collectionGroup("lists").where("sharedCode", "==", sharedCode).limit(1).get();
-  if (q.empty) throw new Error("getSharedListService: Shared list not found");
-  const doc = q.docs[0];
-  listSnap = doc;
-  listId = doc.id;
+  const shared = await db.collection("sharedLists").where("sharedCode", "==", sharedCode).limit(1).get();
+  if (shared.empty) throw new Error("getSharedListService: Shared list not found");
+  const sharedData = shared.docs[0].data();
+  listSnap = shared.docs[0];
+  listId = sharedData.listId;
+  uid = sharedData.ownerId;
   // derive uid from path users/{uid}/lists/{listId}
-  const parts = doc.ref.path.split("/");
+  const parts = shared.docs[0].ref.path.split("/");
   uid = parts.length >= 2 ? parts[1] : null;
   listRef = db.collection("users").doc(uid).collection("lists").doc(listId);
 
@@ -305,9 +301,11 @@ export async function getSharedListService(sharedCode) {
 
   const listData = listSnap.data();
   // enforce public visibility
+/*
   if (!listData || listData.visibility !== "public") {
     throw new Error("getSharedListService: List is not public");
   }
+*/
 
   const itemsSnap = await listRef.collection("items").get();
   const items = itemsSnap.docs.map(d => ({ itemId: d.id, ...d.data() }));
