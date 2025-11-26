@@ -1,8 +1,7 @@
 //setup Firestore
 import admin from "firebase-admin";
-import { v4 as uuidv4 } from "uuid";
 import dotenv from "dotenv";
-import loadServiceAccount from "../src/services/loadServiceAccount.js";
+import { loadServiceAccount } from "./src/services/loadServiceAccount.js";
 dotenv.config();
 
 // populate the firastore database with demo data
@@ -109,9 +108,9 @@ async function main() {
     fcId: flashcardId,
     captureRef: captureId,
     wordId: wordId,
-    originalWord: captureDoc.originalWord,
+    originalWord: captureDoc.objectName,
     translatedWord: captureDoc.translatedWord,
-    pronunciation: captureDoc.pronunciation,
+    pronunciation: wordDoc.pronunciations["it"],
     targetLang: captureDoc.targetLang,
     //imageDownloadUrl: captureDoc.imageDownloadUrl,
     //familiarity: 0,

@@ -20,4 +20,4 @@ function loadServiceAccount() {
   return JSON.parse(readFileSync(keyPath, "utf8"));
 }
 
-export default loadServiceAccount;
+export { loadServiceAccount };

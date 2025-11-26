@@ -1,7 +1,7 @@
 // config/firebase.js
 import admin from "firebase-admin";
 import dotenv from "dotenv";
-import loadServiceAccount from "../services/loadServiceAccount.js";
+import { loadServiceAccount } from "../services/loadServiceAccount.js";
 //detects and loads the .env file if present
 dotenv.config();
 
