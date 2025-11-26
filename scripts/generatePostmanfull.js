@@ -8,7 +8,6 @@ import path from "path";
 import axios from "axios";
 import readline from "readline";
 import dotenv from "dotenv";
-import { url } from "inspector";
 dotenv.config();
 
 const OUT_DIR = path.join(process.cwd(), "postman");

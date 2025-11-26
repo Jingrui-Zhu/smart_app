@@ -182,7 +182,7 @@ export async function addItemToListService(uid, listId, wordId, captureId) {
   const updateWordCountLangList = LangListSnap.data().wordCount + 1;
   // update wordCount in language list
   await LangListRef.update({
-    wordCount: admin.firestore.FieldValue.increment(1),
+    wordCount: updateWordCountLangList,
     updatedAt: now
   });
   console.log("Language list wordCount updated.");
@@ -341,7 +341,7 @@ export async function importSharedListService(uid, sharedCode) {
   // copy items
   const batch = db.batch();
   items.forEach(item => {
-    const newItemRef = newListRef.collection("items").doc(item.itemId);
+    const newItemRef = newListRef.collection("items").doc(item.wordId);
     batch.set(newItemRef, item);
   });
   await batch.commit();
