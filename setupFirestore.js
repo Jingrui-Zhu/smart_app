@@ -14,6 +14,7 @@ async function main() {
   });
   const db = admin.firestore();
 
+  const now = new Date().toISOString();
   // Create user profile with hashed password
   const userId = "uid_demo_1";
   const userDoc = {
@@ -21,10 +22,11 @@ async function main() {
     email: "demo.user@example.com",
     password: "password123",
     displayName: "Demo User",
-    nativeLang: "en",
-    preferredTargetLang: "it",
-    createdAt: new Date().toISOString(),
-    lastSeen: new Date().toISOString()
+    //nativeLang: "en",
+    //preferredTargetLang: "it",
+    avatarId: 1,
+    createdAt: now,
+    lastSeen: now
   };
 
   console.log("Creating user profile: " + userDoc.email + " - " + userDoc.displayName);
@@ -46,20 +48,23 @@ async function main() {
   console.log("Word inserted.");
 
   // Create captures 
-  const captureId = uuidv4();
+  const captureId = `cap_demo_table_it_${userId}`;
   const captureDoc = {
     captureId: captureId,
-    createdAt: new Date().toISOString(),
     objectName: wordId,
     uid: userId,
-    originalWord: "table",
-    translatedWord: "tavolo",
-    sourceLang: "en",
-    targetLang: "it",
-    pronunciation: "ˈta.vo.lo",
     //imagePath: `user-images/${userId}/${captureId}.jpg`,
     //imageDownloadUrl: "https://example.com/fake-download-url.jpg",
-    confidence: 0.95,
+    accuracy: 0,
+    imageBase64: null,
+    imageMimeType: null,
+    imageSizeBytes: 0,
+    createdAt: now,
+    wordId: wordId,
+    translatedWord: "tavolo",
+    targetLang: "it",
+    status: "translated",
+    updatedAt: now,
     //modelInfo: { objModel: "demo-obj-v1", transModel: "demo-trans-v1" }
   };
   console.log("Creating capture.");
@@ -67,18 +72,18 @@ async function main() {
   console.log("User capture inserted: ", captureId);
 
   // Create user word list under user
-  const listId = "demo_favourite_list";
+  const listId = `demo_list_${userId}`
   const listDoc = {
     listId: listId,
     listName: "favorite",
     description: "My favorite words",
-    listLanguage: ["en", "it"],
+    //listLanguage: ["en", "it"],
     isDefault: true,
     visibility: "private",
     imported: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    wordCount: 1
+    wordCount: 1,
+    createdAt: now,
+    updatedAt: now,
   };
   console.log("Creating user word list.");
   await db.collection("users").doc(userId).collection("lists").doc(listId).set(listDoc);
@@ -89,11 +94,10 @@ async function main() {
     wordId: wordId,
     originalWord: wordDoc.originalWord,
     translatedWord: wordDoc.translations["it"],
-    originalLang: captureDoc.sourceLang,
     translatedLang: captureDoc.targetLang,
     captureId: captureId,
     note: "Demo word added via seed script",
-    addedAt: new Date().toISOString(),
+    addedAt: now,
   }
   console.log("Adding word to user list");
   await db.collection("users").doc(userId).collection("lists").doc(listId).collection("items").doc(wordId).set(itemDoc);
@@ -102,17 +106,19 @@ async function main() {
   // Create flashcard using the captureId as id (denormalized copy)
   const flashcardId = `fc_${captureId}`;
   const flashcardDoc = {
-    flashcardId: flashcardId,
-    createdAt: new Date().toISOString(),
-    captureRef: `captures/${captureId}`,
+    fcId: flashcardId,
+    captureRef: captureId,
     wordId: wordId,
     originalWord: captureDoc.originalWord,
     translatedWord: captureDoc.translatedWord,
     pronunciation: captureDoc.pronunciation,
+    targetLang: captureDoc.targetLang,
     //imageDownloadUrl: captureDoc.imageDownloadUrl,
     //familiarity: 0,
     //tags: ["demo", "furniture"],
-    description: "Seeded flashcard for demo"
+    description: "Seeded flashcard for demo",
+    createdBy: userId,
+    createdAt: now,
   };
   console.log("Creating flashcard");
   await db.collection("users").doc(userId).collection("flashcards").doc(flashcardId).set(flashcardDoc);

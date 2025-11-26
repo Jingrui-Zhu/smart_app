@@ -30,7 +30,7 @@ export async function createCaptureService(uid, fileBuffer = null, imageBase64 =
     }
 
     objectName = objectName.toLowerCase();
-    const captureId = `cap_${objectName}_to_${targetLang}_${uid}`;
+    const captureId = `cap_${objectName}_${targetLang}_${uid}`;
     const captureRef = userRef.collection("captures").doc(captureId);
     const captureSnap = await captureRef.get();
     if (captureSnap.exists) {

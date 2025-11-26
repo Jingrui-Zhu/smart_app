@@ -7,15 +7,15 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "https://smart-app-u3of.onrender.com/"
+      "value": "https://smart-app-u3of.onrender.com"
     },
     {
       "key": "idToken",
-      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiZGVtbyB1c2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQwODY4NjEsInVzZXJfaWQiOiJya3pJWFNZYUNWYkRwdEsxWnNZYzl2TnVIRkEyIiwic3ViIjoicmt6SVhTWWFDVmJEcHRLMVpzWWM5dk51SEZBMiIsImlhdCI6MTc2NDA4Njg2MSwiZXhwIjoxNzY0MDkwNDYxLCJlbWFpbCI6InRlc3QudXNlcjFAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXIxQGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.ABHR8IUYHoqqV35Nb4RcaBOq6BOjFQeo21LivnRlgvhKgDQL9OF-9E-_-k63ABnVai4_DhcnWUOZ8rZ81PE3yiF80deT5DZfoqw2JM-3aw1aTYWdMFcUtpxTuK-qAXh6SvnOUj3-Ag8SGY-V62B01ZoIqWvjgo1yoonBcPoGdGZTNeBvPZ1FBqPKCGhbgzO73nfii5EA1qPjZW6Wyza402oZtSFLdmpS3O_EbY6yM00Cu-tEl7p-DspH_VLXXQzUXdgb0eF5ULsWmcB52_jCV_tLMm94nkr267Bj9lGYI9gJGWgfIvT5egzw8_9izbc0NjV1h5Hl0BAy3bK9FHxaJA"
+      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQ1YTZjMGMyYjgwMDcxN2EzNGQ1Y2JiYmYzOWI4NGI2NzYxMjgyNjUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQxNTA5NDMsInVzZXJfaWQiOiJqSG1WTnBSQUFsWGIwSmFtdVRRNkNjS0RzZTQzIiwic3ViIjoiakhtVk5wUkFBbFhiMEphbXVUUTZDY0tEc2U0MyIsImlhdCI6MTc2NDE1MDk0MywiZXhwIjoxNzY0MTU0NTQzLCJlbWFpbCI6InRlc3QudXNlcjJAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXIyQGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.mNJNz3gFodS7-1Csi7Z-WjNiH6VMAVmNO9kC4jkCv2PYVVxraOD0RRjKL3VmiJmOGX_c42rfAeDzwtT1yJuqtg_uiT47---0diufKS_6L_Ogc-rsHJyOJsSObmiv-Pez8M4KZizNk2Q_S2MH2Pffcl-6fg8Iazcax-Xys8rk4f2Ya4CLe8tBA4QBdpGGSyTu4oPeggJryjFEpRtyEhVW3BAbdYCesyty7XmToFogFC6GtFX519YMnSCj0W33HbfOyX4a4Mek17P1RjXqGwp6jIB2EDGIk_Oa6icgEg2HyLXpFUSVKu7nh1yVAfX-SO6tM3pLYjV6-n5UmsWrhmr8Tw"
     },
     {
       "key": "email",
-      "value": "test.user1@example.it"
+      "value": "test.user2@example.it"
     },
     {
       "key": "password",
@@ -23,6 +23,10 @@
     },
     {
       "key": "captureId",
+      "value": ""
+    },
+    {
+      "key": "wordId",
       "value": ""
     },
     {
@@ -54,7 +58,7 @@
           "raw": "{\"email\":\"{{email}}\",\"password\":\"{{password}}\",\"name\":\"Demo User\",\"avatarId\":2}"
         },
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//auth/signup",
+          "raw": "https://smart-app-u3of.onrender.com/auth/signup",
           "host": [
             "{{baseUrl}}"
           ],
@@ -91,7 +95,7 @@
           "raw": "{\"email\":\"{{email}}\",\"password\":\"{{password}}\"}"
         },
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//auth/login",
+          "raw": "https://smart-app-u3of.onrender.com/auth/login",
           "host": [
             "{{baseUrl}}"
           ],
@@ -125,7 +129,7 @@
           }
         ],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//auth/profile",
+          "raw": "https://smart-app-u3of.onrender.com/auth/profile",
           "host": [
             "{{baseUrl}}"
           ],
@@ -156,7 +160,7 @@
           "raw": "{\"oldPassword\":\"test123\",\"newPassword\":\"test456\"}"
         },
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//auth/change-password",
+          "raw": "https://smart-app-u3of.onrender.com/auth/change-password",
           "host": [
             "{{baseUrl}}"
           ],
@@ -187,7 +191,7 @@
           "raw": "{\"saveData\":{\"lastOpenScreen\":\"vocab\"}}"
         },
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//auth/logout",
+          "raw": "https://smart-app-u3of.onrender.com/auth/logout",
           "host": [
             "{{baseUrl}}"
           ],
@@ -235,7 +239,7 @@
           ]
         },
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//captures",
+          "raw": "https://smart-app-u3of.onrender.com/captures",
           "host": [
             "{{baseUrl}}"
           ],
@@ -249,7 +253,7 @@
           "listen": "test",
           "script": {
             "exec": [
-              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.capture && json.capture.captureId) pm.collectionVariables.set('captureId', json.capture.captureId); } catch(e){} }"
+              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.capture && json.capture.captureId) pm.collectionVariables.set('captureId', json.capture.captureId); pm.collectionVariables.set('wordId', json.capture.wordId); } catch(e){} }"
             ],
             "type": "text/javascript"
           }
@@ -268,7 +272,7 @@
           }
         ],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//captures",
+          "raw": "https://smart-app-u3of.onrender.com/captures",
           "host": [
             "{{baseUrl}}"
           ],
@@ -290,7 +294,7 @@
           }
         ],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//captures/{{captureId}}",
+          "raw": "https://smart-app-u3of.onrender.com/captures/{{captureId}}",
           "host": [
             "{{baseUrl}}"
           ],
@@ -313,7 +317,7 @@
           }
         ],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//captures/{{captureId}}",
+          "raw": "https://smart-app-u3of.onrender.com/captures/{{captureId}}",
           "host": [
             "{{baseUrl}}"
           ],
@@ -344,7 +348,7 @@
           "raw": "{\"captureId\":\"{{captureId}}\",\"description\":\"others\"}"
         },
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//flashcards",
+          "raw": "https://smart-app-u3of.onrender.com/flashcards",
           "host": [
             "{{baseUrl}}"
           ],
@@ -377,7 +381,7 @@
           }
         ],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//flashcards",
+          "raw": "https://smart-app-u3of.onrender.com/flashcards",
           "host": [
             "{{baseUrl}}"
           ],
@@ -399,7 +403,7 @@
           }
         ],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//flashcards/{{fcId}}",
+          "raw": "https://smart-app-u3of.onrender.com/flashcards/{{fcId}}",
           "host": [
             "{{baseUrl}}"
           ],
@@ -422,7 +426,7 @@
           }
         ],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//flashcards/{{fcId}}",
+          "raw": "https://smart-app-u3of.onrender.com/flashcards/{{fcId}}",
           "host": [
             "{{baseUrl}}"
           ],
@@ -450,10 +454,10 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\"listId\":\"mylist123\",\"name\":\"My Vocab\"}"
+          "raw": "{\"listName\":\"My Vocab\"}"
         },
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//lists",
+          "raw": "https://smart-app-u3of.onrender.com/lists",
           "host": [
             "{{baseUrl}}"
           ],
@@ -486,7 +490,7 @@
           }
         ],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//lists",
+          "raw": "https://smart-app-u3of.onrender.com/lists",
           "host": [
             "{{baseUrl}}"
           ],
@@ -508,13 +512,14 @@
           }
         ],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//lists/{{listId}}",
+          "raw": "https://smart-app-u3of.onrender.com/lists/{{listId}}/items",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "lists",
-            "{{listId}}"
+            "{{listId}}",
+            "items"
           ]
         }
       }
@@ -536,16 +541,17 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\"wordId\":\"id_seagull\",\"captureId\":\"{{captureId}}\"}"
+          "raw": "{\"wordId\":\"{{wordId}}\",\"captureId\":\"{{captureId}}\"}"
         },
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//lists/{{listId}}",
+          "raw": "https://smart-app-u3of.onrender.com/lists/{{listId}}/items",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "lists",
-            "{{listId}}"
+            "{{listId}}",
+            "items"
           ]
         }
       }
@@ -570,7 +576,7 @@
           "raw": "{\"listName\":\"My Vocab Updated\"}"
         },
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//lists/{{listId}}",
+          "raw": "https://smart-app-u3of.onrender.com/lists/{{listId}}",
           "host": [
             "{{baseUrl}}"
           ],
@@ -593,14 +599,15 @@
           }
         ],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//lists/{{listId}}/{{captureId}}",
+          "raw": "https://smart-app-u3of.onrender.com/lists/{{listId}}/items/{{wordId}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "lists",
             "{{listId}}",
-            "{{captureId}}"
+            "items",
+            "{{wordId}}"
           ]
         }
       }
@@ -622,10 +629,10 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\"listId\":\"{{listId}}\"}"
+          "raw": "{\"listId\":\"{{listId}}\",\"wordId\":\"{{wordId}}\",\"captureId\":\"{{captureId}}\"}"
         },
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//lists/share",
+          "raw": "https://smart-app-u3of.onrender.com/lists/share",
           "host": [
             "{{baseUrl}}"
           ],
@@ -659,13 +666,31 @@
           }
         ],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//lists/shared/{{shareCode}}",
+          "raw": "https://smart-app-u3of.onrender.com/lists/shared/{{shareCode}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "lists",
             "shared",
+            "{{shareCode}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Lists: View Shared List (public)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com/shared/list/{{shareCode}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "shared",
+            "list",
             "{{shareCode}}"
           ]
         }
@@ -691,7 +716,7 @@
           "raw": "{\"sharedCode\":\"{{shareCode}}\"}"
         },
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com//lists/import",
+          "raw": "https://smart-app-u3of.onrender.com/lists/import",
           "host": [
             "{{baseUrl}}"
           ],

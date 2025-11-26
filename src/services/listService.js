@@ -160,7 +160,7 @@ export async function addItemToListService(uid, listId, wordId, captureId) {
     translatedLang: targetLang,
     captureId: captureId,
     note: " ",
-    addedAt: new Date().toISOString(),
+    addedAt: now,
   };
 
   // add to the user-defined list

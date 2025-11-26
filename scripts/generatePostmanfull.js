@@ -35,7 +35,7 @@ async function main() {
   const firebaseApiKey = envApiKey || (await ask("Firebase Web API Key (FIREBASE_API_KEY): "));
 
   // Use the test account credentials you gave
-  const TEST_EMAIL = "test.user1@example.it";
+  const TEST_EMAIL = "test.user2@example.it";
   const TEST_PASSWORD = "test123";
 
   if (!baseUrl || !firebaseApiKey) {
