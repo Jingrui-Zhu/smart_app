@@ -8,7 +8,6 @@ import path from "path";
 import axios from "axios";
 import readline from "readline";
 import dotenv from "dotenv";
-import { request } from "http";
 dotenv.config();
 
 const OUT_DIR = path.join(process.cwd(), "postman");
@@ -116,6 +115,19 @@ async function main() {
     }
   })
 
+  collection.item.push({
+    name: "Auth: Update User Profile",
+    request: {
+      method: "PUT",
+      header: [
+        { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
+        { key: "Content-Type", value: "application/json" }
+      ],
+      body: { mode: "raw", raw: JSON.stringify({ displayName: "Updated User", preferredLang: "en", avatarId: 3 }) },
+      url: { raw: `${baseUrl}/auth/profile`, host: ["{{baseUrl}}"], path: ["auth", "profile"] }
+    }
+  })
+
   // change-password
   collection.item.push({
     name: "Auth: Change Password",
@@ -144,10 +156,10 @@ async function main() {
     event: [{ listen: "test", script: { exec: ["pm.collectionVariables.set('idToken', '');"], type: "text/javascript" } }]
   });
 
-  // ---------------------imageS
+  // ---------------------IMAGES
   // create and translate image
   collection.item.push({
-    name: "images: Create and translate image",
+    name: "Images: Create and translate Image",
     request: {
       method: "POST",
       header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
@@ -256,7 +268,13 @@ async function main() {
         { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
         { key: "Content-Type", value: "application/json" }
       ],
-      body: { mode: "raw", raw: JSON.stringify({ listName: "My Vocab" }) },
+      body: {
+        mode: "formdata",
+        formdata: [
+          { key: "image", type: "file", src: exampleImagePath },
+          { key: "listName", value: "my vocab", type: "text" }
+        ]
+      },
       url: { raw: `${baseUrl}/lists`, host: ["{{baseUrl}}"], path: ["lists"] },
     },
     event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.listId) pm.collectionVariables.set('listId', json.listId); } catch(e){} }"], type: "text/javascript" } }]
@@ -305,7 +323,13 @@ async function main() {
         { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
         { key: "Content-Type", value: "application/json" }
       ],
-      body: { mode: "raw", raw: JSON.stringify({ listName: "My Vocab Updated" }) },
+      body: {
+        mode: "formdata",
+        formdata: [
+          { key: "image", type: "file", src: exampleImagePath },
+          { key: "listName", value: "My Vocab Updated", type: "text" }
+        ]
+      },
       url: { raw: `${baseUrl}/lists/{{listId}}`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}"] },
     }
   });

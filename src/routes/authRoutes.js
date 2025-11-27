@@ -16,6 +16,9 @@ router.post("/change-password", requireAuth, authService.resetPassword);
 // logout - /POST /auth/logout
 router.post("/logout", requireAuth, authService.logout);
 
+// update user profile - /PUT /auth/profile
+router.put("/profile", requireAuth, authService.updateUserProfileHandler);
+
 // get user profile - /GET /auth/profile
 router.get("/profile", requireAuth, authService.getUserProfileHandler);
 
