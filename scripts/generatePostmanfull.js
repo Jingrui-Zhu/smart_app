@@ -344,6 +344,7 @@ async function main() {
     }
   });
 
+  // delete a list
   collection.item.push({
     name: "Lists: Delete List",
     request: {
