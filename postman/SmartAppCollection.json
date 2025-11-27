@@ -11,7 +11,7 @@
     },
     {
       "key": "idToken",
-      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQ1YTZjMGMyYjgwMDcxN2EzNGQ1Y2JiYmYzOWI4NGI2NzYxMjgyNjUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQxNTA5NDMsInVzZXJfaWQiOiJqSG1WTnBSQUFsWGIwSmFtdVRRNkNjS0RzZTQzIiwic3ViIjoiakhtVk5wUkFBbFhiMEphbXVUUTZDY0tEc2U0MyIsImlhdCI6MTc2NDE1MDk0MywiZXhwIjoxNzY0MTU0NTQzLCJlbWFpbCI6InRlc3QudXNlcjJAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXIyQGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.mNJNz3gFodS7-1Csi7Z-WjNiH6VMAVmNO9kC4jkCv2PYVVxraOD0RRjKL3VmiJmOGX_c42rfAeDzwtT1yJuqtg_uiT47---0diufKS_6L_Ogc-rsHJyOJsSObmiv-Pez8M4KZizNk2Q_S2MH2Pffcl-6fg8Iazcax-Xys8rk4f2Ya4CLe8tBA4QBdpGGSyTu4oPeggJryjFEpRtyEhVW3BAbdYCesyty7XmToFogFC6GtFX519YMnSCj0W33HbfOyX4a4Mek17P1RjXqGwp6jIB2EDGIk_Oa6icgEg2HyLXpFUSVKu7nh1yVAfX-SO6tM3pLYjV6-n5UmsWrhmr8Tw"
+      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQyNDU3MzYsInVzZXJfaWQiOiJqSG1WTnBSQUFsWGIwSmFtdVRRNkNjS0RzZTQzIiwic3ViIjoiakhtVk5wUkFBbFhiMEphbXVUUTZDY0tEc2U0MyIsImlhdCI6MTc2NDI0NTczNiwiZXhwIjoxNzY0MjQ5MzM2LCJlbWFpbCI6InRlc3QudXNlcjJAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXIyQGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.ISx55Mxg1zbZqtkavno5cTGQrRqV_8YQFNpW0iAmSAIUAYkD7Q7fYnyOZCjH7QINc8Txn3ODP6NbXZnrWVLRizbBF74_WzV1Sa2OyvBnSM_43QvOCfpUaWPl75A2RpoWs_mHECHym2Te6HFqaLMBbv5wjpSwaTcsFQepxCaOf7VY9kjKAL2tm6UEDUjlaPdfhNzAtZtGUKMcdjBVffe1UwyG1OLSqrko8lZif5CdtWaDro80nDbCbsA4aBoplIqz1fP6aY4kl-uV0ZGRUh9cI4cKLCVU83PS10mTNgVDcHeSmNC6nm8PoDmX8UB8nuVzPzVGgDxWY3Me5A-CsnIB_w"
     },
     {
       "key": "email",
@@ -186,10 +186,6 @@
             "value": "application/json"
           }
         ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"saveData\":{\"lastOpenScreen\":\"vocab\"}}"
-        },
         "url": {
           "raw": "https://smart-app-u3of.onrender.com/auth/logout",
           "host": [
@@ -200,7 +196,18 @@
             "logout"
           ]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set('idToken', '');"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
     },
     {
       "name": "Captures: Create and translate capture",
@@ -345,7 +352,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\"captureId\":\"{{captureId}}\",\"description\":\"others\"}"
+          "raw": "{\"captureId\":\"{{captureId}}\"}"
         },
         "url": {
           "raw": "https://smart-app-u3of.onrender.com/flashcards",
@@ -613,6 +620,29 @@
       }
     },
     {
+      "name": "Lists: Delete List",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{idToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://smart-app-u3of.onrender.com/lists/{{listId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lists",
+            "{{listId}}"
+          ]
+        }
+      }
+    },
+    {
       "name": "Lists: Create Share Code",
       "request": {
         "method": "POST",
@@ -629,7 +659,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\"listId\":\"{{listId}}\",\"wordId\":\"{{wordId}}\",\"captureId\":\"{{captureId}}\"}"
+          "raw": "{\"listId\":\"{{listId}}\"}"
         },
         "url": {
           "raw": "https://smart-app-u3of.onrender.com/lists/share",

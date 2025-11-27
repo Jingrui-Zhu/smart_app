@@ -44,11 +44,11 @@ export async function createCaptureService(uid, fileBuffer = null, imageBase64 =
         uid,
         objectName,
         accuracy: accuracy !== null ? parseFloat(accuracy) : null,
-        imageBase64: base64 || null,
         imageMimeType: mime || null,
         imageSizeBytes: size || 0,
         status: "pending_translation",
         createdAt: now,
+        imageBase64: base64 || null,
     };
     console.log("Creating capture: ", objectName, " - ", captureId);
     await userRef.collection("captures").doc(captureId).set(captureDoc);
@@ -75,7 +75,7 @@ export async function createCaptureService(uid, fileBuffer = null, imageBase64 =
 
     // update the related document in Words (even there is no update, run it anyway)
     const updateTranslation = await translationService.updateTranslationService(objectName, translatedWord, targetLang);
-    
+
     wordId = updateTranslation.wordId;
     const captureUpdate = {
         wordId: wordId,
@@ -92,7 +92,7 @@ export async function createCaptureService(uid, fileBuffer = null, imageBase64 =
     const updatedSnap = await userRef.collection("captures").doc(captureId).get();
     const updatedCapture = updatedSnap.data();
 
-    return { createCapture_ok: true, ...updatedCapture};
+    return { createCapture_ok: true, ...updatedCapture };
 }// end createCaptureService
 
 export async function getCaptureService(captureId, uid) {

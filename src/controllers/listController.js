@@ -1,11 +1,37 @@
 // src/controllers/listController.js
 import * as listService from '../services/listService.js';
+import { MAX_BYTES } from "../middleware/multerMiddleware.js";
 
 export const createUserListHandler = async (req, res) => {
     try {
         const uid = req.user?.uid;
         const { listName } = req.body;
-        const list = await listService.createUserListService(uid, listName);
+
+        // handle image
+        let fileBuffer = null;
+        let imageBase64 = null;
+        let imageMimeType = null;
+        let imageSizeBytes = 0;
+
+        if (req.file) {
+            fileBuffer = req.file.buffer;
+            imageMimeType = req.file.mimetype;
+            imageSizeBytes = req.file.size;
+            if (imageSizeBytes > MAX_BYTES) {
+                return res.json({ error: "Image too large" });
+            }
+        } else if (req.body.imageBase64) {
+            imageBase64 = req.body.imageBase64;
+            imageMimeType = req.body.imageMimeType || "image/jpeg";
+            // approximate size
+            const base64Length = imageBase64.length;
+            imageSizeBytes = Math.floor((base64Length * 3) / 4);
+            if (imageSizeBytes > MAX_BYTES) {
+                return res.json({ error: "Image too large" });
+            }
+        }
+
+        const list = await listService.createUserListService(uid, listName, fileBuffer, imageBase64, imageMimeType, imageSizeBytes);
         return res.json({ message: "User list created successfully", ...list });
     } catch (err) {
         console.error("createUserList controller error:", err);

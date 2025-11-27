@@ -5,9 +5,23 @@ import { create } from "domain";
 import dotenv from "dotenv";
 dotenv.config();
 
-export async function createUserListService(uid, listName) {
+function bufferToBase64(buf) {
+  return buf.toString("base64");
+}
+export async function createUserListService(uid, listName, fileBuffer = null, imageBase64 = null, imageMimeType = null, imageSizeBytes = 0) {
   if (!uid) throw new Error("createUserListService: uid is required");
   if (!listName) throw new Error("createUserListService: listName is required");
+
+  // If buffer provided, convert to base64
+  let base64 = imageBase64;
+  let mime = imageMimeType;
+  let size = imageSizeBytes;
+
+  if (fileBuffer) {
+    base64 = bufferToBase64(fileBuffer);
+    // caller should provide mime + size via req.file; but if not, leave mime null
+    size = fileBuffer.length;
+  }
 
   // preliminary check to ensure user exists
   const userDocSnap = await db.collection("users").doc(uid).get();
@@ -31,7 +45,10 @@ export async function createUserListService(uid, listName) {
     imported: false,
     createdAt: now,
     updatedAt: now,
-    wordCount: 0
+    wordCount: 0,
+    imageMimeType: mime || null,
+    imageSizeBytes: size || 0,
+    imageBase64: base64 || null,
   };
   console.log("Creating user list: ", listName, " - ", listId);
   await db.collection("users").doc(uid).collection("lists").doc(listId).set(listDoc);
@@ -301,11 +318,11 @@ export async function getSharedListService(sharedCode) {
 
   const listData = listSnap.data();
   // enforce public visibility
-/*
-  if (!listData || listData.visibility !== "public") {
-    throw new Error("getSharedListService: List is not public");
-  }
-*/
+  /*
+    if (!listData || listData.visibility !== "public") {
+      throw new Error("getSharedListService: List is not public");
+    }
+  */
 
   const itemsSnap = await listRef.collection("items").get();
   const items = itemsSnap.docs.map(d => ({ itemId: d.id, ...d.data() }));
