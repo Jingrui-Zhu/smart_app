@@ -1,5 +1,5 @@
 {
-  "id": "smart-app-env-1764245736625",
+  "id": "smart-app-env-1764264078720",
   "name": "Smart App Auto Environment",
   "values": [
     {
@@ -24,11 +24,11 @@
     },
     {
       "key": "idToken",
-      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQyNDU3MzYsInVzZXJfaWQiOiJqSG1WTnBSQUFsWGIwSmFtdVRRNkNjS0RzZTQzIiwic3ViIjoiakhtVk5wUkFBbFhiMEphbXVUUTZDY0tEc2U0MyIsImlhdCI6MTc2NDI0NTczNiwiZXhwIjoxNzY0MjQ5MzM2LCJlbWFpbCI6InRlc3QudXNlcjJAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXIyQGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.ISx55Mxg1zbZqtkavno5cTGQrRqV_8YQFNpW0iAmSAIUAYkD7Q7fYnyOZCjH7QINc8Txn3ODP6NbXZnrWVLRizbBF74_WzV1Sa2OyvBnSM_43QvOCfpUaWPl75A2RpoWs_mHECHym2Te6HFqaLMBbv5wjpSwaTcsFQepxCaOf7VY9kjKAL2tm6UEDUjlaPdfhNzAtZtGUKMcdjBVffe1UwyG1OLSqrko8lZif5CdtWaDro80nDbCbsA4aBoplIqz1fP6aY4kl-uV0ZGRUh9cI4cKLCVU83PS10mTNgVDcHeSmNC6nm8PoDmX8UB8nuVzPzVGgDxWY3Me5A-CsnIB_w",
+      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQyNjQwNzgsInVzZXJfaWQiOiJqSG1WTnBSQUFsWGIwSmFtdVRRNkNjS0RzZTQzIiwic3ViIjoiakhtVk5wUkFBbFhiMEphbXVUUTZDY0tEc2U0MyIsImlhdCI6MTc2NDI2NDA3OCwiZXhwIjoxNzY0MjY3Njc4LCJlbWFpbCI6InRlc3QudXNlcjJAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXIyQGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.m339mPbARdwfRbX6DQukThpqbqTficXs8Wt1XBtB06cjSkD_-3mL6TPzZH4OO6raGo-FV1KtSwCwhaAFSr7T2NXuNow5LRFqMpMsY4EOqYBCBxK4XfCt5OVEvOpW1wpitAR2CgwyXUmZ7VwH5UjUn-mR9OYHZKGkRkoM70wtiSbOjgE4wvjOvnP_yd6yGvCXAgwzCwnzRpj1xHJTHuUrNRtIeeqhnwf57sNM7sBYj18j6Vla1OEE7OiEfrg0X3lwtK0OmKotUP19gWb6FoLPgMl9qKcP2nKoBs7QoMaFIfMj2zhNrV6nbmQh7Ipma1bl4iwzeGhYdJflEkqnN8Larw",
       "enabled": true
     },
     {
-      "key": "captureId",
+      "key": "imageId",
       "value": "",
       "enabled": true
     },
