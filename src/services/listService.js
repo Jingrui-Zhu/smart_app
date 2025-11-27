@@ -1,7 +1,6 @@
 // src/services/listService.js
 import { db, admin } from "../config/firebase.js";
 import crypto from "crypto";
-import { create } from "domain";
 import dotenv from "dotenv";
 dotenv.config();
 

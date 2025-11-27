@@ -3,8 +3,11 @@ import * as authService from "../services/authService.js";
 
 export const signup = async (req, res) => {
   try {
-    const { email, password, name, avatarId } = req.body;
-    const user = await authService.createUserService(email, password, name, avatarId);
+    const { email, password, name, preferredLang, avatarId } = req.body;
+    if (!(avatarId < 1 ||  avatarId > 8)) {
+      return res.json({ error: "Invalid avatarId, must be between 1 and 8" });
+    }
+    const user = await authService.createUserService(email, password, name, preferredLang, avatarId);
     return res.json({ message: "User signup successful", ...user.user });
   } catch (err) {
     console.error("signup error", err.message || err);
@@ -67,3 +70,15 @@ export const getUserProfileHandler = async (req, res) => {
     return res.json({ error: error.message || "Failed to get user profile" });
   }
 } // end getUserProfileHandler
+
+export const updateUserProfileHandler = async (req, res)=>{
+  try {
+    const uid = req.user?.uid;
+    const { displayName, preferredLang, avatarId } = req.body;
+    const result = await authService.updateUserProfileService(uid, displayName, preferredLang, avatarId);
+    return res.json({ message: "User profile updated successfully", ...result });
+  } catch (error) {
+    console.error("updateUserProfileHandler error", error.message || error);
+    return res.json({ error: error.message || "Failed to update user profile" });
+  }
+} // end updateUserProfileHandler

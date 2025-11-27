@@ -10,9 +10,9 @@ if (!FIREBASE_API_KEY) {
 }
 
 // Create a new user with email and password
-export async function createUserService(email, password, name, avatarId) {
+export async function createUserService(email, password, name, preferredLang, avatarId) {
     if (!email || !password) throw new Error("cretaUserService: email and password are required");
-    if (!name || !avatarId) throw new Error("createUserService: name and avatarId are required");
+    if (!name || !avatarId || !preferredLang) throw new Error("createUserService: name, preferredLang and avatarId are required");
 
     // check if email already exists
     const userRef = db.collection("users").where("email", "==", email);
@@ -37,11 +37,11 @@ export async function createUserService(email, password, name, avatarId) {
         uid: userRecord.uid,
         displayName: name,
         email,
+        preferredLang: preferredLang,
+        avatarId: avatarId,
         createdAt: now,
         lastSeen: now,
         //nativeLang: nativeLang,
-        avatarId: avatarId || 0,
-        //preferredTargetLang: preferredTargetLang || "auto",
     };
     console.log("Creating user profile: " + email + " - " + name);
 
@@ -65,6 +65,7 @@ export async function createUserService(email, password, name, avatarId) {
         listId: listId,
         listName: "favorite",
         description: " ",
+        preferedLang: userDoc.preferedLang,
         //listLanguage: [userDoc.nativeLang, userDoc.preferredTargetLang],
         isDefault: true,
         visibility: "private",
@@ -99,12 +100,17 @@ export async function loginWithPasswordService(email, password) {
     // Fetch the user profile from Firestore (if exists)
     const userDocRef = db.collection("users").doc(localId);
     const userSnap = await userDocRef.get();
-    const user = userSnap.exists ? userSnap.data() : { uid: localId, email };
+    if (!userSnap.exists) throw new Error("loginWithPasswordService: User profile not found");
+    const userData = userSnap.data();
+    const userName = userData.displayName;
+    const userEmail = userData.email;
+    const userAvatarId = userData.avatarId;
+    const userPreferredLang = userData.preferredLang;
 
     // update lastSeen
     await userDocRef.set({ lastSeen: new Date().toISOString() }, { merge: true });
 
-    return { login_ok: true, uid: localId, user, idToken, refreshToken, expiresIn };
+    return { login_ok: true, userId: localId, userName, userEmail, userAvatarId, userPreferredLang, idToken, refreshToken, expiresIn };
 }// end loginWithPasswordService
 
 // verify ID token and return decoded token
@@ -186,6 +192,7 @@ export async function getUserProfileService(uid) {
     const userName = userData.displayName;
     const userEmail = userData.email;
     const userAvatarId = userData.avatarId;
+    const userPreferredLang = userData.preferredLang;
 
     const listRef = userRef.collection("lists");
     const listSnap = await listRef.get();
@@ -195,5 +202,26 @@ export async function getUserProfileService(uid) {
     const captureSnap = await captureRef.get();
     const captureCount = captureSnap.size;
 
-    return { getUserProfile_ok: true, userName, userEmail, userAvatarId, listCount, captureCount };
+    return { getUserProfile_ok: true, userName, userEmail, userAvatarId, userPreferredLang, listCount, captureCount };
 } // end getUserProfileService
+
+export async function updateUserProfileService(uid, displayName = null, preferredLang = null, avatarId = 0) {
+    if (!uid) throw new Error("updateUserProfileService: uid required");
+
+    const userRef = db.collection("users").doc(uid);
+    const userSnap = await userRef.get();
+    if (!userSnap.exists) throw new Error("updateUserProfileService: User not found");
+
+    const updates = {};
+    if (displayName !== null) updates.displayName = displayName;
+    if (preferredLang !== null) updates.preferredLang = preferredLang;
+    if (avatarId && (avatarId >= 1 && avatarId <= 8)) updates.avatarId = avatarId;
+
+    if (Object.keys(updates).length === 0) {
+        return { updateUserProfileService_ok: false, message: "updateUserProfileService: No valid fields to update" };
+    }
+
+    await userRef.set(updates, { merge: true });
+    console.log("User profile updated for uid: " + uid);   
+    return { updateUserProfile_ok: true, uid, updates }; 
+} // end updateUserProfileService
