@@ -57,24 +57,24 @@ export async function createCaptureService(uid, fileBuffer = null, imageBase64 =
     // translate the objectName and update the capture document accordingly
     let wordId = null;
     let translatedWord = null;
-    let pronunciation = null;
+    //let pronunciation = null;
     // check if the translation of the objectName already exists
     const exists = await translationService.translationExistsService(objectName, targetLang);
     if (exists && typeof exists === 'object') {
         wordId = exists.wordId;
         translatedWord = exists.existing;
-        pronunciation = exists.pronunciation || " ";
+        //pronunciation = exists.pronunciation || " ";
         console.log("Translation already exists: ", translatedWord);
     } else {
         // if the trasnlation does not exist, perform it now and store it
         const translationResult = await translationService.translateTextService(objectName, "auto", targetLang);
         translatedWord = translationResult.translatedWord;
-        pronunciation = translationResult.raw?.pronunciation || " ";
+        //pronunciation = translationResult.raw?.pronunciation || " ";
         console.log("Performed new translation: ", translatedWord);
     }
 
     // update the related document in Words (even there is no update, run it anyway)
-    const updateTranslation = await translationService.updateTranslationService(objectName, translatedWord, targetLang, pronunciation);
+    const updateTranslation = await translationService.updateTranslationService(objectName, translatedWord, targetLang);
     
     wordId = updateTranslation.wordId;
     const captureUpdate = {

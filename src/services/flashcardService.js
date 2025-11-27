@@ -27,7 +27,7 @@ export async function createFlashcardService(captureId, uid, description = null)
         originalWord: captureData.objectName,
         translatedWord: captureData.translatedWord,
         targetLang: captureData.targetLang,
-        pronunciation: captureData.pronunciation || "", // may be null if not present
+        //pronunciation: captureData.pronunciation || "", // may be null if not present
         createdBy: uid,
         createdAt: now,
         description: description || " "

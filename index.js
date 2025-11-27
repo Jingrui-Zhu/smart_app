@@ -27,5 +27,19 @@ app.use("/lists", listRouter);
 // Public endpoint to retrieve a shared list by token (no auth required)
 app.get("/shared/list/:sharedCode", getSharedListPublicHandler);
 
+app.use((err, req, res, next) => {
+  res.status(400).json({
+    status: "bad request",
+    message: err.message,
+  });
+});
+
+app.use((err, req, res, next) => {
+    res.status(404).json({
+      status: "route not found",
+      message: err.message,
+    });
+});
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));

@@ -54,7 +54,7 @@ export async function translateTextService(text, sourceLang = "auto", targetLang
 
 
 // create or update a word translation, by setting {merge: true} we can add new translations to existing words
-export async function updateTranslationService(originalWord, translatedWord, targetLang, pronunciation = null) {
+export async function updateTranslationService(originalWord, translatedWord, targetLang) {
   if (!originalWord) throw new Error("updateTranslationService: originalWord is required");
   if (!translatedWord) throw new Error("updateTranslationService: translatedWord is required");
   if (!targetLang) throw new Error("updateTranslationService: targetLang is required");
@@ -64,7 +64,7 @@ export async function updateTranslationService(originalWord, translatedWord, tar
     wordId: wordId,
     originalWord: originalWord,
     translations: { [targetLang]: translatedWord },
-    pronunciations: { [targetLang]: pronunciation },
+    //pronunciations: { [targetLang]: pronunciation },
     //curation: { createdBy: userId, source: "user", createdAt: new Date().toISOString(), approved: true }
   };
   console.log("Creating word: ", wordId, " - ", wordDoc.originalWord);
@@ -88,9 +88,9 @@ export async function translationExistsService(originalText, targetLang = "auto"
     const wordId = doc.id;
     const data = doc.data();
     existing = (data.translations && data.translations[targetLang]) ? data.translations[targetLang] : null;
-    const pronunciation = (data.pronunciations && data.pronunciations[targetLang]) ? data.pronunciations[targetLang] : null;
+    //const pronunciation = (data.pronunciations && data.pronunciations[targetLang]) ? data.pronunciations[targetLang] : null;
     if (existing !== null) {
-      return { existing, wordId, pronunciation };
+      return { existing, wordId };
     }
   }
   return false;

@@ -8,6 +8,7 @@ import path from "path";
 import axios from "axios";
 import readline from "readline";
 import dotenv from "dotenv";
+import { request } from "http";
 dotenv.config();
 
 const OUT_DIR = path.join(process.cwd(), "postman");
@@ -138,9 +139,9 @@ async function main() {
         { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
         { key: "Content-Type", value: "application/json" }
       ],
-      body: { mode: "raw", raw: JSON.stringify({ saveData: { lastOpenScreen: "vocab" } }) },
       url: { raw: `${baseUrl}/auth/logout`, host: ["{{baseUrl}}"], path: ["auth", "logout"] }
-    }
+    },
+    event: [{ listen: "test", script: { exec: ["pm.collectionVariables.set('idToken', '');"], type: "text/javascript" } }]
   });
 
   // ---------------------CAPTURES
@@ -186,13 +187,13 @@ async function main() {
 
   // remove a capture by id
   collection.item.push({
-    name:"Captures: Delete Capture",
-    request:{
-      method:"DELETE",
-      header:[{key:"Authorization", value:"Bearer {{idToken}}", type:"text"}],
-      url:{raw: `${baseUrl}/captures/{{captureId}}`, host:["{{baseUrl}}"], path:["captures", "{{captureId}}"]},
+    name: "Captures: Delete Capture",
+    request: {
+      method: "DELETE",
+      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
+      url: { raw: `${baseUrl}/captures/{{captureId}}`, host: ["{{baseUrl}}"], path: ["captures", "{{captureId}}"] },
     }
-  })  
+  })
   // -------------------------FLASHCARDS
   // create a flashcard
   collection.item.push({
@@ -203,12 +204,16 @@ async function main() {
         { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
         { key: "Content-Type", value: "application/json" }
       ],
-      body: { mode: "raw", raw: JSON.stringify({ captureId: "{{captureId}}", description: "others" }) },
+      body: { mode: "raw", raw: JSON.stringify({ captureId: "{{captureId}}" }) },
       url: { raw: `${baseUrl}/flashcards`, host: ["{{baseUrl}}"], path: ["flashcards"] },
     },
-    event: [{ listen: "test", script: { exec: [
-      "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); const fc = json.flashcard || json; if (fc && fc.fcId) pm.collectionVariables.set('fcId', fc.fcId); } catch(e){} }"
-    ], type: "text/javascript" } }]
+    event: [{
+      listen: "test", script: {
+        exec: [
+          "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); const fc = json.flashcard || json; if (fc && fc.fcId) pm.collectionVariables.set('fcId', fc.fcId); } catch(e){} }"
+        ], type: "text/javascript"
+      }
+    }]
   });
 
   // list user flashcards
@@ -315,6 +320,15 @@ async function main() {
     }
   });
 
+  collection.item.push({
+    name: "Lists: Delete List",
+    request: {
+      method: "DELETE",
+      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
+      url: { raw: `${baseUrl}/lists/{{listId}}`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}"] },
+    }
+  })
+
   // create a shared list
   collection.item.push({
     name: "Lists: Create Share Code",
@@ -324,8 +338,8 @@ async function main() {
         { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
         { key: "Content-Type", value: "application/json" }
       ],
-      body: { mode: "raw", raw: JSON.stringify({ listId: "{{listId}}", wordId: "{{wordId}}" , captureId: "{{captureId}}" }) },
-      url: { raw: `${baseUrl}/lists/share`, host: ["{{baseUrl}}"], path: ["lists", "share"] } 
+      body: { mode: "raw", raw: JSON.stringify({ listId: "{{listId}}" }) },
+      url: { raw: `${baseUrl}/lists/share`, host: ["{{baseUrl}}"], path: ["lists", "share"] }
     },
     event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.code) pm.collectionVariables.set('shareCode', json.code); } catch(e){} }"], type: "text/javascript" } }]
   });
@@ -336,10 +350,11 @@ async function main() {
     request: {
       method: "GET",
       header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
-      url: { raw: `${baseUrl}/lists/shared/{{shareCode}}`, host: ["{{baseUrl}}"], path: ["lists", "shared", "{{shareCode}}"] }  
+      url: { raw: `${baseUrl}/lists/shared/{{shareCode}}`, host: ["{{baseUrl}}"], path: ["lists", "shared", "{{shareCode}}"] }
     }
   });
 
+  // View the shared list (public, no auth)
   collection.item.push({
     name: "Lists: View Shared List (public)",
     request: {
@@ -359,7 +374,7 @@ async function main() {
         { key: "Content-Type", value: "application/json" }
       ],
       body: { mode: "raw", raw: JSON.stringify({ sharedCode: "{{shareCode}}" }) },
-      url: { raw: `${baseUrl}/lists/import`, host: ["{{baseUrl}}"], path: ["lists", "import"] } 
+      url: { raw: `${baseUrl}/lists/import`, host: ["{{baseUrl}}"], path: ["lists", "import"] }
     }
   });
 

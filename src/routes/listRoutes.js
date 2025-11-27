@@ -18,8 +18,8 @@ router.post("/:listId/items", requireAuth, listController.addItemToListHandler);
 router.get("/", requireAuth, listController.getUserListsHandler);
 // Get all items in a list - GET /lists/:listId/items
 router.get("/:listId/items", requireAuth, listController.getAllItemsInListHandler);
-// Get a shared list by shared code - GET /lists/shared/:sharedCode (public)
-router.get("/shared/:sharedCode", listController.getSharedListHandler);
+// Get a shared list by shared code - GET /lists/shared/:sharedCode
+router.get("/shared/:sharedCode", requireAuth, listController.getSharedListHandler);
 
 // Delete a user list - DELETE /lists/:listId
 router.delete("/:listId", requireAuth, listController.deleteUserListHandler);

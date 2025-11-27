@@ -24,7 +24,7 @@ export const translateText = async (req, res) => {
     console.log("translated to target language:", translatedTargetLangResult);
 
     // save the translation
-    await translationService.updateTranslationService(originalText, translatedTargetLangResult.translatedText, targetLang, translatedTargetLangResult.pronunciation);
+    await translationService.updateTranslationService(originalText, translatedTargetLangResult.translatedText, targetLang);
     console.log("translation saved to database.");
 
     return res.json({ ok: true, originalText: originalText, translatedText: translatedTargetLangResult.translatedText, targetLang: targetLang });

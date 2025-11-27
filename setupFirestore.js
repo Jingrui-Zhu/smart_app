@@ -38,7 +38,7 @@ async function main() {
     wordId: wordId,
     originalWord: "table",
     translations: { en: "table", it: "tavolo" },
-    pronunciations: { it: "'ta.vo.lo" },
+    //pronunciations: { it: "'ta.vo.lo" },
     //createdAt: new Date().toISOString(),
     //curation: { createdBy: "seed-script", source: "demo", approved: true }
   };
@@ -110,7 +110,7 @@ async function main() {
     wordId: wordId,
     originalWord: captureDoc.objectName,
     translatedWord: captureDoc.translatedWord,
-    pronunciation: wordDoc.pronunciations["it"],
+    //pronunciation: wordDoc.pronunciations["it"],
     targetLang: captureDoc.targetLang,
     //imageDownloadUrl: captureDoc.imageDownloadUrl,
     //familiarity: 0,

@@ -143,23 +143,35 @@ export async function resetPasswordService(uid, oldPassword, newPassword) {
 
     // Update the password
     const updateSuccess = await auth.updateUser(uid, { password: newPassword });
-    if (!updateSuccess) throw new Error("resetPasswordService: Failed to update password");
+    if (!updateSuccess) {
+        console.log("resetPasswordService: Failed to update password for user " + uid);
+        throw new Error("resetPasswordService: Failed to update password");
+    }
     // Revoke refresh tokens so existing sessions are invalid
-    const revokeOldSession = await auth.revokeRefreshTokens(uid);
-    if (!revokeOldSession) throw new Error("resetPasswordService: Failed to revoke old sessions");
-
-    return { resetPassword_ok: true, userId: uid, email: email };
+    await auth.revokeRefreshTokens(uid);
+    // verifyIdToken should fail after revocation
+    const revoke = await auth.verifyIdToken(uid, true).then(() => false).catch(() => true);
+    if (revoke) {
+        console.log(`resetPasswordService: Successfully logged out user ${uid}`);
+        return { resetPassword_ok: true, userId: uid, email: email };
+    } else {
+        console.log("resetPasswordService: Password update successful, but Failed to revoke tokens for user " + uid);
+        throw new Error("resetPasswordService: Password update successful, but Failed to revoke tokens");
+    }
 }// end resetPasswordService
 
 export async function logoutService(uid) {
     if (!uid) throw new Error("logoutService: uid required");
 
-    try {
-        const revoke = await auth.revokeRefreshTokens(uid);
-        if (!revoke) throw new Error("logoutService: Failed to revoke tokens");
+    await auth.revokeRefreshTokens(uid);
+    // verifyIdToken should fail after revocation
+    const revoke = await auth.verifyIdToken(uid, true).then(() => false).catch(() => true);
+    if (revoke) {
+        console.log(`logoutService: Successfully logged out user ${uid}`);
         return { logout_ok: true, revoke };
-    } catch (error) {
-        throw new Error("logoutService: Logout failed: " + error.message);
+    } else {
+        console.log("logoutService: Failed to revoke tokens for user " + uid);
+        throw new Error("logoutService: Failed to revoke tokens");
     }
 } // end logoutService
 
