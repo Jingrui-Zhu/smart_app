@@ -3,10 +3,10 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRouter from "./src/routes/authRoutes.js";
 import translationRouter from "./src/routes/translationRoutes.js";
-import captureRouter from "./src/routes/captureRoutes.js";
+import imageRouter from "./src/routes/imageRoutes.js";
 import flashcardRouter from "./src/routes/flashcardRoutes.js";
 import listRouter from "./src/routes/listRoutes.js";
-import { getSharedListPublicHandler } from "./src/controllers/listController.js";
+import { getSharedlistPublicHandler } from "./src/controllers/listController.js";
 dotenv.config();
 
 const app = express();
@@ -20,12 +20,12 @@ app.get("/", (req, res) => res.json({ message: "Visual Dictionary backend runnin
 
 app.use("/auth", authRouter);
 app.use("/translate", translationRouter);
-app.use("/captures", captureRouter);
+app.use("/images", imageRouter);
 app.use("/flashcards", flashcardRouter);
 app.use("/lists", listRouter);
 
 // Public endpoint to retrieve a shared list by token (no auth required)
-app.get("/shared/list/:sharedCode", getSharedListPublicHandler);
+app.get("/shared/list/:sharedCode", getSharedlistPublicHandler);
 
 app.use((err, req, res, next) => {
   res.status(400).json({

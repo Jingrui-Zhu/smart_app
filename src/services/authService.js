@@ -198,11 +198,11 @@ export async function getUserProfileService(uid) {
     const listSnap = await listRef.get();
     const listCount = listSnap.size;
 
-    const captureRef = userRef.collection("captures");
-    const captureSnap = await captureRef.get();
-    const captureCount = captureSnap.size;
+    const imageRef = userRef.collection("images");
+    const imageSnap = await imageRef.get();
+    const imageCount = imageSnap.size;
 
-    return { getUserProfile_ok: true, userName, userEmail, userAvatarId, userPreferredLang, listCount, captureCount };
+    return { getUserProfile_ok: true, userName, userEmail, userAvatarId, userPreferredLang, listCount, imageCount };
 } // end getUserProfileService
 
 export async function updateUserProfileService(uid, displayName = null, preferredLang = null, avatarId = 0) {

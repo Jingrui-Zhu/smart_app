@@ -1,11 +1,11 @@
 // src/services/flashcardService.js
 import { db } from "../config/firebase.js";
 
-export async function createFlashcardService(captureId, uid, description = null) {
-    if (!captureId) throw new Error("createFlashcardService: captureId is required");
+export async function createFlashcardService(imageId, uid, description = null) {
+    if (!imageId) throw new Error("createFlashcardService: imageId is required");
     if (!uid) throw new Error("createFlashcardService: uid is required");
 
-    const fcId = `fc_${captureId}`;
+    const fcId = `fc_${imageId}`;
     const flashcardRef = db.collection("users").doc(uid).collection("flashcards").doc(fcId);
     const existingSnap = await flashcardRef.get();
     // return the existing flashcard if already present
@@ -13,21 +13,21 @@ export async function createFlashcardService(captureId, uid, description = null)
         return { createFlashcard_ok: false, ...existingSnap.data() };
     }
 
-    const captureRef = db.collection("users").doc(uid).collection("captures").doc(captureId);
-    const capSnap = await captureRef.get();
-    if (!capSnap.exists) throw new Error("createFlashcardService: Capture not found - " + captureId);
-    const captureData = capSnap.data();
-    if (!captureData.wordId || !captureData.translatedWord) throw new Error("createFlashcardService: Capture not translated - " + captureId);
+    const imageRef = db.collection("users").doc(uid).collection("images").doc(imageId);
+    const imgSnap = await imageRef.get();
+    if (!imgSnap.exists) throw new Error("createFlashcardService: image not found - " + imageId);
+    const imageData = imgSnap.data();
+    if (!imageData.wordId || !imageData.translatedWord) throw new Error("createFlashcardService: image not translated - " + imageId);
 
     const now = new Date().toISOString();
     const fcDoc = {
         fcId,
-        captureId,
-        wordId: captureData.wordId,
-        originalWord: captureData.objectName,
-        translatedWord: captureData.translatedWord,
-        targetLang: captureData.targetLang,
-        //pronunciation: captureData.pronunciation || "", // may be null if not present
+        imageId,
+        wordId: imageData.wordId,
+        originalWord: imageData.objectName,
+        translatedWord: imageData.translatedWord,
+        targetLang: imageData.targetLang,
+        //pronunciation: imageData.pronunciation || "", // may be null if not present
         createdBy: uid,
         createdAt: now,
         description: description || " "

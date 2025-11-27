@@ -5,7 +5,7 @@ service cloud.firestore {
       allow read: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null && request.auth.uid == userId;
       allow update: if request.auth != null && request.auth.uid == userId;
-    // subcollections
+    // sublists
       match /lists/{listId} {
         allow read, create, update, delete: if request.auth != null && request.auth.uid == userId;
           match /items/{itemId} {
@@ -16,10 +16,10 @@ service cloud.firestore {
     match /words/{wordId} {
       allow read: if request.auth != null;
       allow write: if false; // create words via server admin
-      match /userCaptures/{capId} {
+      match /userimages/{imgId} {
         allow read: if request.auth != null;
         allow write: if request.auth != null && request.auth.uid == request.resource.data.userId;
-      } //captures
+      } //images
     } //words
   } //database
 } //firestore

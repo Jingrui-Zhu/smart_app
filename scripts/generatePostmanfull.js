@@ -72,7 +72,7 @@ async function main() {
       { key: "idToken", value: idToken },
       { key: "email", value: TEST_EMAIL },
       { key: "password", value: TEST_PASSWORD },
-      { key: "captureId", value: "" },
+      { key: "imageId", value: "" },
       { key: "wordId", value: "" },
       { key: "fcId", value: "" },
       { key: "listId", value: "" },
@@ -144,10 +144,10 @@ async function main() {
     event: [{ listen: "test", script: { exec: ["pm.collectionVariables.set('idToken', '');"], type: "text/javascript" } }]
   });
 
-  // ---------------------CAPTURES
-  // create and translate capture
+  // ---------------------imageS
+  // create and translate image
   collection.item.push({
-    name: "Captures: Create and translate capture",
+    name: "images: Create and translate image",
     request: {
       method: "POST",
       header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
@@ -160,38 +160,38 @@ async function main() {
           { key: "targetLang", value: "it", type: "text" }
         ]
       },
-      url: { raw: `${baseUrl}/captures`, host: ["{{baseUrl}}"], path: ["captures"] }
+      url: { raw: `${baseUrl}/images`, host: ["{{baseUrl}}"], path: ["images"] }
     },
-    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.capture && json.capture.captureId); pm.collectionVariables.set('captureId', json.capture.captureId); pm.collectionVariables.set('wordId', json.capture.wordId); } catch(e){} }"], type: "text/javascript" } }]
+    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.image && json.image.imageId); pm.collectionVariables.set('imageId', json.image.imageId); pm.collectionVariables.set('wordId', json.image.wordId); } catch(e){} }"], type: "text/javascript" } }]
   });
 
-  // list captures
+  // list images
   collection.item.push({
-    name: "Captures: List Captures",
+    name: "images: List images",
     request: {
       method: "GET",
       header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
-      url: { raw: `${baseUrl}/captures`, host: ["{{baseUrl}}"], path: ["captures"] }
+      url: { raw: `${baseUrl}/images`, host: ["{{baseUrl}}"], path: ["images"] }
     }
   });
 
-  // fetch a capture by id
+  // fetch a image by id
   collection.item.push({
-    name: "Captures: Get Capture by Id",
+    name: "images: Get image by Id",
     request: {
       method: "GET",
       header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
-      url: { raw: `${baseUrl}/captures/{{captureId}}`, host: ["{{baseUrl}}"], path: ["captures", "{{captureId}}"] }
+      url: { raw: `${baseUrl}/images/{{imageId}}`, host: ["{{baseUrl}}"], path: ["images", "{{imageId}}"] }
     }
   });
 
-  // remove a capture by id
+  // remove a image by id
   collection.item.push({
-    name: "Captures: Delete Capture",
+    name: "images: Delete image",
     request: {
       method: "DELETE",
       header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
-      url: { raw: `${baseUrl}/captures/{{captureId}}`, host: ["{{baseUrl}}"], path: ["captures", "{{captureId}}"] },
+      url: { raw: `${baseUrl}/images/{{imageId}}`, host: ["{{baseUrl}}"], path: ["images", "{{imageId}}"] },
     }
   })
   // -------------------------FLASHCARDS
@@ -204,7 +204,7 @@ async function main() {
         { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
         { key: "Content-Type", value: "application/json" }
       ],
-      body: { mode: "raw", raw: JSON.stringify({ captureId: "{{captureId}}" }) },
+      body: { mode: "raw", raw: JSON.stringify({ imageId: "{{imageId}}" }) },
       url: { raw: `${baseUrl}/flashcards`, host: ["{{baseUrl}}"], path: ["flashcards"] },
     },
     event: [{
@@ -291,7 +291,7 @@ async function main() {
         { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
         { key: "Content-Type", value: "application/json" }
       ],
-      body: { mode: "raw", raw: JSON.stringify({ wordId: "{{wordId}}", captureId: "{{captureId}}" }) },
+      body: { mode: "raw", raw: JSON.stringify({ wordId: "{{wordId}}", imageId: "{{imageId}}" }) },
       url: { raw: `${baseUrl}/lists/{{listId}}/items`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}", "items"] },
     }
   });
@@ -388,7 +388,7 @@ async function main() {
       { key: "password", value: TEST_PASSWORD, enabled: true },
       { key: "firebaseApiKey", value: firebaseApiKey, enabled: true },
       { key: "idToken", value: idToken, enabled: true },
-      { key: "captureId", value: "", enabled: true },
+      { key: "imageId", value: "", enabled: true },
       { key: "wordId", value: "", enabled: true },
       { key: "fcId", value: "", enabled: true },
       { key: "listId", value: "", enabled: true },
@@ -403,7 +403,7 @@ async function main() {
   fs.writeFileSync(envPath, JSON.stringify(environment, null, 2));
 
   // README
-  const readme = `Smart App — Postman files\n\nFiles created:\n - ${colPath}\n - ${envPath}\n\nImport both into Postman (File -> Import), select the environment, then run the requests.\n\nThe script signed in to Firebase and saved an idToken into the environment variable "idToken". If you want to refresh the token, run the "Auth: Login (manual)" request in Postman (it will update idToken automatically).\n\nExample file used for multipart upload (Create Capture): ${exampleImagePath}\n`;
+  const readme = `Smart App — Postman files\n\nFiles created:\n - ${colPath}\n - ${envPath}\n\nImport both into Postman (File -> Import), select the environment, then run the requests.\n\nThe script signed in to Firebase and saved an idToken into the environment variable "idToken". If you want to refresh the token, run the "Auth: Login (manual)" request in Postman (it will update idToken automatically).\n\nExample file used for multipart upload (Create image): ${exampleImagePath}\n`;
   fs.writeFileSync(path.join(OUT_DIR, "README.md"), readme);
 
   console.log("\nDone. Files written to:", OUT_DIR);

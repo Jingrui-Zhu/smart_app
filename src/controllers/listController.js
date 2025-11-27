@@ -78,8 +78,8 @@ export const addItemToListHandler = async (req, res) => {
     try {
         const uid = req.user?.uid;
         const { listId } = req.params;
-        const { wordId, captureId } = req.body;
-        const result = await listService.addItemToListService(uid, listId, wordId, captureId);
+        const { wordId, imageId } = req.body;
+        const result = await listService.addItemToListService(uid, listId, wordId, imageId);
         return res.json({ message: "Item added to list successfully", ...result });
     } catch (err) {
         console.error("addItemToList controller error:", err);
@@ -104,7 +104,32 @@ export const updateListHandler = async (req, res) => {
         const uid = req.user?.uid || null;
         const { listId } = req.params;
         const { listName } = req.body;
-        const result = await listService.updateListService(uid, listId, listName);
+
+        // handle image
+        let fileBuffer = null;
+        let imageBase64 = null;
+        let imageMimeType = null;
+        let imageSizeBytes = 0;
+
+        if (req.file) {
+            fileBuffer = req.file.buffer;
+            imageMimeType = req.file.mimetype;
+            imageSizeBytes = req.file.size;
+            if (imageSizeBytes > MAX_BYTES) {
+                return res.json({ error: "Image too large" });
+            }
+        } else if (req.body.imageBase64) {
+            imageBase64 = req.body.imageBase64;
+            imageMimeType = req.body.imageMimeType || "image/jpeg";
+            // approximate size
+            const base64Length = imageBase64.length;
+            imageSizeBytes = Math.floor((base64Length * 3) / 4);
+            if (imageSizeBytes > MAX_BYTES) {
+                return res.json({ error: "Image too large" });
+            }
+        }
+
+        const result = await listService.updateListService(uid, listId, listName, fileBuffer, imageBase64, imageMimeType, imageSizeBytes);
         return res.json({ message: "List updated successfully", ...result });
     } catch (error) {
         console.error("updateList controller error:", error);

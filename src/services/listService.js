@@ -126,22 +126,22 @@ export async function getAllItemsInListService(uid, listId) {
   return { getAllItemsInList_ok: true, items };
 }// end getAllItemsInListService
 
-export async function addItemToListService(uid, listId, wordId, captureId) {
+export async function addItemToListService(uid, listId, wordId, imageId) {
   if (!uid) throw new Error("addItemToListService: uid is required");
   if (!listId) throw new Error("addItemToListService: listId is required");
   if (!wordId) throw new Error("addItemToListService: wordId is required");
-  if (!captureId) throw new Error("addItemToListService: captureId is required");
+  if (!imageId) throw new Error("addItemToListService: imageId is required");
 
   // preliminary check to ensure user exists
   const userRef = db.collection("users").doc(uid);
   const userSnap = await userRef.get();
   if (!userSnap.exists) throw new Error("addItemToListService: User not found");
 
-  const captureRef = userRef.collection("captures").doc(captureId);
-  const captureSnap = await captureRef.get();
-  if (!captureSnap.exists) throw new Error("addItemToListService: Capture not found - " + captureId);
-  const captureData = captureSnap.data();
-  const targetLang = captureData.targetLang;
+  const imageRef = userRef.collection("images").doc(imageId);
+  const imageSnap = await imageRef.get();
+  if (!imageSnap.exists) throw new Error("addItemToListService: image not found - " + imageId);
+  const imageData = imageSnap.data();
+  const targetLang = imageData.targetLang;
 
   const wordRef = db.collection("words").doc(wordId);
   const wordSnap = await wordRef.get();
@@ -174,7 +174,7 @@ export async function addItemToListService(uid, listId, wordId, captureId) {
     originalWord: wordData.originalWord,
     translatedWord: wordData.translations[targetLang],
     translatedLang: targetLang,
-    captureId: captureId,
+    imageId: imageId,
     note: " ",
     addedAt: now,
   };
@@ -243,7 +243,7 @@ export async function removeItemFromListService(uid, listId, wordId) {
   return { removeItemFromList_ok: true };
 }// end removeItemFromListService
 
-export async function updateListService(uid, listId, listName) {
+export async function updateListService(uid, listId, listName, fileBuffer = null, imageBase64 = null, imageMimeType = null, imageSizeBytes = 0) {
   if (!uid) throw new Error("updateListService: uid is required");
   if (!listId) throw new Error("updateListService: listId is required");
   if (!listName) throw new Error("updateListService: listName is required");
@@ -252,9 +252,34 @@ export async function updateListService(uid, listId, listName) {
   const listSnap = await listRef.get();
   if (!listSnap.exists) throw new Error("updateListService: List not found - " + listId);
 
-  await listRef.update({ listName: listName, updatedAt: new Date().toISOString() });
-  return { updateList_ok: true }
-}// end updateListService
+  // If buffer provided, convert to base64
+  let base64 = imageBase64;
+  let mime = imageMimeType;
+  let size = imageSizeBytes;
+
+  if (fileBuffer) {
+    base64 = bufferToBase64(fileBuffer);
+    // caller should provide mime + size via req.file; but if not, leave mime null
+    size = fileBuffer.length;
+  }
+
+  const update = {};
+  // If listName is provided (even empty string), set it; otherwise leave unchanged
+  if (typeof listName !== "undefined") {
+    update.listName = listName;
+  }
+
+  // Always update image fields: if neither fileBuffer nor imageBase64 provided, clear image fields
+  if (fileBuffer || imageBase64) {
+    update.imageBase64 = base64 || null;
+    update.imageMimeType = mime || null;
+    update.imageSizeBytes = size || 0;
+  }
+
+  const now = new Date().toISOString();
+  await listRef.set({ ...update, updatedAt: now }, { merge: true });
+  return { updateList_ok: true, updatedAt: now, listId };
+} // end updateListService
 
 export async function createSharedListCodeService(uid, listId) {
   if (!uid) throw new Error("createSharedListCodeService: uid is required");

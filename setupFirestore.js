@@ -46,13 +46,13 @@ async function main() {
   await db.collection("words").doc(wordId).set(wordDoc);
   console.log("Word inserted.");
 
-  // Create captures 
-  const captureId = `cap_demo_table_it_${userId}`;
-  const captureDoc = {
-    captureId: captureId,
+  // Create images 
+  const imageId = `img_demo_table_it_${userId}`;
+  const imageDoc = {
+    imageId: imageId,
     objectName: wordId,
     uid: userId,
-    //imagePath: `user-images/${userId}/${captureId}.jpg`,
+    //imagePath: `user-images/${userId}/${imageId}.jpg`,
     //imageDownloadUrl: "https://example.com/fake-download-url.jpg",
     accuracy: 0,
     imageBase64: null,
@@ -66,9 +66,9 @@ async function main() {
     updatedAt: now,
     //modelInfo: { objModel: "demo-obj-v1", transModel: "demo-trans-v1" }
   };
-  console.log("Creating capture.");
-  await db.collection("users").doc(userId).collection("captures").doc(captureId).set(captureDoc);
-  console.log("User capture inserted: ", captureId);
+  console.log("Creating image.");
+  await db.collection("users").doc(userId).collection("images").doc(imageId).set(imageDoc);
+  console.log("User image inserted: ", imageId);
 
   // Create user word list under user
   const listId = `demo_list_${userId}`
@@ -93,8 +93,8 @@ async function main() {
     wordId: wordId,
     originalWord: wordDoc.originalWord,
     translatedWord: wordDoc.translations["it"],
-    translatedLang: captureDoc.targetLang,
-    captureId: captureId,
+    translatedLang: imageDoc.targetLang,
+    imageId: imageId,
     note: "Demo word added via seed script",
     addedAt: now,
   }
@@ -102,17 +102,17 @@ async function main() {
   await db.collection("users").doc(userId).collection("lists").doc(listId).collection("items").doc(wordId).set(itemDoc);
   console.log("Word added to list: ", wordId);
 
-  // Create flashcard using the captureId as id (denormalized copy)
-  const flashcardId = `fc_${captureId}`;
+  // Create flashcard using the imageId as id (denormalized copy)
+  const flashcardId = `fc_${imageId}`;
   const flashcardDoc = {
     fcId: flashcardId,
-    captureRef: captureId,
+    imageRef: imageId,
     wordId: wordId,
-    originalWord: captureDoc.objectName,
-    translatedWord: captureDoc.translatedWord,
+    originalWord: imageDoc.objectName,
+    translatedWord: imageDoc.translatedWord,
     //pronunciation: wordDoc.pronunciations["it"],
-    targetLang: captureDoc.targetLang,
-    //imageDownloadUrl: captureDoc.imageDownloadUrl,
+    targetLang: imageDoc.targetLang,
+    //imageDownloadUrl: imageDoc.imageDownloadUrl,
     //familiarity: 0,
     //tags: ["demo", "furniture"],
     description: "Seeded flashcard for demo",

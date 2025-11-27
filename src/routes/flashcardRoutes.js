@@ -5,7 +5,7 @@ import * as flashcardService from "../controllers/flashcardController.js";
 
 const router = express.Router();
 
-// Create a flashcard from a capture (owner-only) - POST /flashcards
+// Create a flashcard from a image (owner-only) - POST /flashcards
 router.post("/", requireAuth, flashcardService.createFlashcardHandler);
 
 // List user's flashcards - GET /flashcards/fcId

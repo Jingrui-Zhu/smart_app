@@ -4,8 +4,8 @@ import * as flashcardService from "../services/flashcardService.js";
 export const createFlashcardHandler = async (req, res) => {
     try {
         const uid = req.user?.uid;
-        const { captureId, description } = req.body;
-        const result = await flashcardService.createFlashcardService(captureId, uid, description);
+        const { imageId, description } = req.body;
+        const result = await flashcardService.createFlashcardService(imageId, uid, description);
         if (!result.createFlashcard_ok) {
             return res.json({ ok: true, message: "Flashcard already exists", flashcard: result });
         }
