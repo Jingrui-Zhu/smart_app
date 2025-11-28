@@ -4,9 +4,9 @@ import * as authService from "../services/authService.js";
 export const signup = async (req, res) => {
   try {
     const { email, password, name, preferredLang, avatarId } = req.body;
-    if (!(avatarId < 1 ||  avatarId > 8)) {
-      return res.json({ error: "Invalid avatarId, must be between 1 and 8" });
-    }
+    //if (avatarId < 1 ||  avatarId > 8) {
+      //return res.json({ error: "Invalid avatarId, must be between 1 and 8" });
+    //}
     const user = await authService.createUserService(email, password, name, preferredLang, avatarId);
     return res.json({ message: "User signup successful", ...user.user });
   } catch (err) {

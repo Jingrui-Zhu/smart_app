@@ -65,7 +65,7 @@ export async function createUserService(email, password, name, preferredLang, av
         listId: listId,
         listName: "favorite",
         description: " ",
-        preferedLang: userDoc.preferedLang,
+        preferredLang: userDoc.preferredLang,
         //listLanguage: [userDoc.nativeLang, userDoc.preferredTargetLang],
         isDefault: true,
         visibility: "private",
