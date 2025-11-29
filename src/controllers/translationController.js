@@ -20,10 +20,10 @@ export const translateText = async (req, res) => {
     // otherwise, perform translation
     const translatedTargetLangResult = await translationService.translateTextService(originalText, "auto", targetLang);
     console.log("translated to target language:", translatedTargetLangResult);
-    const translatedText = translatedTargetLangResult.translatedText;
+    const translatedWord = translatedTargetLangResult.translatedWord;
 
     // save the translation
-    const result = await translationService.updateTranslationService(originalText, translatedText, targetLang);
+    const result = await translationService.updateTranslationService(originalText, translatedWord, targetLang);
     console.log("translation saved to database.");
 
     return res.json({ message: "Translation successful", ...result });
