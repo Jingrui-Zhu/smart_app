@@ -179,9 +179,9 @@ async function main() {
   });
 
   // ---------------------IMAGES
-  // create and translate image
+  // create entry for image
   collection.item.push({
-    name: "Images: Create and translate Image",
+    name: "Images: Store Image",
     request: {
       method: "POST",
       header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
@@ -200,19 +200,30 @@ async function main() {
       listen: "test",
       script: {
         exec: [
-          "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.image); pm.collectionVariables.set('imageId', json.imageId); pm.collectionVariables.set('wordId', json.wordId); } catch(e){} }"
+          "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.image); pm.collectionVariables.set('imageId', json.imageId); } catch(e){} }"
         ], type: "text/javascript"
       }
     }]
   });
 
   // list images
+  /*  collection.item.push({
+      name: "images: List images",
+      request: {
+        method: "GET",
+        header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
+        url: { raw: `${baseUrl}/images`, host: ["{{baseUrl}}"], path: ["images"] }
+      }
+    });
+  */
+
+  // update image
   collection.item.push({
-    name: "images: List images",
+    name: "images: Update image",
     request: {
-      method: "GET",
+      method: "PUT",
       header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
-      url: { raw: `${baseUrl}/images`, host: ["{{baseUrl}}"], path: ["images"] }
+      url: { raw: `${baseUrl}/images/{{imageId}}`, host: ["{{baseUrl}}"], path: ["images", "{{imageId}}"] }
     }
   });
 
@@ -243,6 +254,8 @@ async function main() {
       url: { raw: `${baseUrl}/images/{{imageId}}`, host: ["{{baseUrl}}"], path: ["images", "{{imageId}}"] },
     }
   })
+
+  /*
   // -------------------------FLASHCARDS
   // create a flashcard
   collection.item.push({
@@ -295,6 +308,33 @@ async function main() {
       url: { raw: `${baseUrl}/flashcards/{{fcId}}`, host: ["{{baseUrl}}"], path: ["flashcards", "{{fcId}}"] },
     }
   });
+  */
+
+  //--------------------------TRANSLATION
+  // translate text
+  collection.item.push({
+    name: "Translation: Translate Text",
+    request:{
+      method: "POST",
+      header: [
+        { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
+        { key: "Content-Type", value: "application/json" }
+      ],
+      body: {
+        mode: "raw",
+        raw: JSON.stringify({ originalText: "seagull", targetLang: "it" })
+      },
+      url: { raw: `${baseUrl}/translate`, host: ["{{baseUrl}}"], path: ["translate"] },
+    },
+    event: [{
+      listen: "test",
+      script: {
+        exec: [
+          "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); const word = json.word || json; if (word && word.wordId) pm.collectionVariables.set('wordId', word.wordId); } catch(e){} }"
+        ], type: "text/javascript"
+      }
+    }]
+  })
 
   // -------------------------LISTS
   // create a list
@@ -307,11 +347,15 @@ async function main() {
         { key: "Content-Type", value: "application/json" }
       ],
       body: {
+        /*
         mode: "formdata",
         formdata: [
           { key: "image", type: "file", src: exampleImagePath },
           { key: "listName", value: "my vocab", type: "text" }
         ]
+          */
+        mode: "raw",
+        raw: JSON.stringify({ listName: "My Vocab" })
       },
       url: { raw: `${baseUrl}/lists`, host: ["{{baseUrl}}"], path: ["lists"] },
     },
@@ -369,11 +413,15 @@ async function main() {
         { key: "Content-Type", value: "application/json" }
       ],
       body: {
+           /*
         mode: "formdata",
         formdata: [
           { key: "image", type: "file", src: exampleImagePath },
           { key: "listName", value: "My Vocab Updated", type: "text" }
         ]
+          */
+        mode: "raw",
+        raw: JSON.stringify({ listName: "My Vocab Updated" })
       },
       url: { raw: `${baseUrl}/lists/{{listId}}`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}"] },
     }
@@ -411,12 +459,14 @@ async function main() {
       body: { mode: "raw", raw: JSON.stringify({ listId: "{{listId}}" }) },
       url: { raw: `${baseUrl}/lists/share`, host: ["{{baseUrl}}"], path: ["lists", "share"] }
     },
-    event: [{ 
-      listen: "test", 
+    event: [{
+      listen: "test",
       script: {
-         exec: [
+        exec: [
           "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.shareCode) pm.collectionVariables.set('shareCode', json.shareCode); } catch(e){} }"
-        ], type: "text/javascript" } }]
+        ], type: "text/javascript"
+      }
+    }]
   });
 
   // view the shared list

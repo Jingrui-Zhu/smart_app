@@ -41,19 +41,21 @@ export async function createImageService(uid, fileBuffer = null, imageBase64 = n
     const now = new Date().toISOString();
     const imageDoc = {
         imageId: imageId,
-        uid,
-        objectName,
+        uid: uid,
+        objectName: objectName,
+        targetLang: targetLang,
         accuracy: accuracy !== null ? parseFloat(accuracy) : null,
         imageMimeType: mime || null,
         imageSizeBytes: size || 0,
         status: "pending_translation",
-        createdAt: now,
         imageBase64: base64 || null,
+        createdAt: now,
     };
     console.log("Creating image: ", objectName, " - ", imageId);
     await userRef.collection("images").doc(imageId).set(imageDoc);
     console.log("image inserted.");
 
+    /*
     // translate the objectName and update the image document accordingly
     let wordId = null;
     let translatedWord = null;
@@ -91,9 +93,40 @@ export async function createImageService(uid, fileBuffer = null, imageBase64 = n
     // Return fresh image data (merge the old + update payload)
     const updatedSnap = await userRef.collection("images").doc(imageId).get();
     const updatedimage = updatedSnap.data();
+    */
 
-    return { createimage_ok: true, ...updatedimage };
+    return { createImage_ok: true, ...imageDoc  };
 }// end createImageService
+
+export async function updateImageService(uid, imageId){
+    if (!imageId) throw new Error("updateImageService: imageId required");
+    if (!uid) throw new Error("updateImageService: uid required");
+
+    const userRef = db.collection("users").doc(uid);
+    if (!userRef) throw new Error("updateImageService: User not found");
+
+    const imageRef = userRef.collection("images").doc(imageId);
+    const imageSnap = await imageRef.get();
+    if (!imageSnap.exists) new Error("updateImageService: image not found");
+    const imageData = imageSnap.data();
+
+    const objectName = imageData.objectName;
+    const targetLang = imageData.targetLang;
+    const exists =  await translationService.translationExistsService(objectName, targetLang);
+
+    const now = new Date().toISOString();
+    const updateDoc = {
+        wordRef: exists ? exists.wordId : null,
+        translatedWord: exists ? exists.translatedWord : null,
+        status: exists ? "translated" : "translation_not_found",
+        updatedAt: now,
+    }
+    console.log("Updating image: ", imageData.objectName, " with translation info.");
+    await userRef.collection("images").doc(imageId).set(updateDoc, { merge: true });
+    console.log("image updated: ", imageId);
+
+    return { updateImage_ok: true, imageId, ...updateDoc };
+}// end updateImageService
 
 export async function getImageService(imageId, uid) {
     if (!imageId) throw new Error("getImageService: imageId required");
@@ -126,7 +159,7 @@ export async function listAllUserImageService(uid) {
 
     const userRef = db.collection("users").doc(uid);
     const userSnap = await userRef.get();
-    if (!userSnap.exists) throw new Error("listAllUserImageService: User not found");   
+    if (!userSnap.exists) throw new Error("listAllUserImageService: User not found");
     const imagesCollection = userRef.collection("images");
     const querySnap = await imagesCollection.orderBy("createdAt", "desc").get();
     const images = [];

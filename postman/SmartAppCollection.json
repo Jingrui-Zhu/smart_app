@@ -11,7 +11,7 @@
     },
     {
       "key": "idToken",
-      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQyNjQwNzgsInVzZXJfaWQiOiJqSG1WTnBSQUFsWGIwSmFtdVRRNkNjS0RzZTQzIiwic3ViIjoiakhtVk5wUkFBbFhiMEphbXVUUTZDY0tEc2U0MyIsImlhdCI6MTc2NDI2NDA3OCwiZXhwIjoxNzY0MjY3Njc4LCJlbWFpbCI6InRlc3QudXNlcjJAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXIyQGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.m339mPbARdwfRbX6DQukThpqbqTficXs8Wt1XBtB06cjSkD_-3mL6TPzZH4OO6raGo-FV1KtSwCwhaAFSr7T2NXuNow5LRFqMpMsY4EOqYBCBxK4XfCt5OVEvOpW1wpitAR2CgwyXUmZ7VwH5UjUn-mR9OYHZKGkRkoM70wtiSbOjgE4wvjOvnP_yd6yGvCXAgwzCwnzRpj1xHJTHuUrNRtIeeqhnwf57sNM7sBYj18j6Vla1OEE7OiEfrg0X3lwtK0OmKotUP19gWb6FoLPgMl9qKcP2nKoBs7QoMaFIfMj2zhNrV6nbmQh7Ipma1bl4iwzeGhYdJflEkqnN8Larw"
+      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQ0NTE0NjUsInVzZXJfaWQiOiJqSG1WTnBSQUFsWGIwSmFtdVRRNkNjS0RzZTQzIiwic3ViIjoiakhtVk5wUkFBbFhiMEphbXVUUTZDY0tEc2U0MyIsImlhdCI6MTc2NDQ1MTQ2NSwiZXhwIjoxNzY0NDU1MDY1LCJlbWFpbCI6InRlc3QudXNlcjJAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXIyQGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.VjAqiQP-eildwgpgjhVWTJuufLSXyDUTuC7N9Gh7eE76K2Hca2j4eo3thX7dsaByWKuN4ITZCV-XYqFZ-jODs4ILk7z475WKrAQK403inrZ_dUFaUgiZ6Y1C4fBHb-wYn4ZLTow6itv0nZSxE7ixXZgBzTdJ8PSVwRHeOHkSAgSnEFBc-RDC6fTHYwMgJk6MamcQ-fCvJyg0ksjRhEfZNiU6IM2A1DO3niZ-PSXc4lsjUC0XnQODwyBZsB_JWi60tW8zOC_CLfCFAf4hCascZlLjEerlHEFEVmAV6OEkZf2i2xXmgxzcf644BL49DkqGbm-KjrarAmO3spj80Qj5TA"
     },
     {
       "key": "email",
@@ -55,7 +55,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\"email\":\"{{email}}\",\"password\":\"{{password}}\",\"name\":\"Demo User\",\"avatarId\":2}"
+          "raw": "{\"email\":\"{{email}}\",\"password\":\"{{password}}\",\"name\":\"Demo User\",\"preferredLang\":\"en\",\"avatarId\":2}"
         },
         "url": {
           "raw": "https://smart-app-u3of.onrender.com/auth/signup",
@@ -241,7 +241,7 @@
       ]
     },
     {
-      "name": "Images: Create and translate Image",
+      "name": "Images: Store Image",
       "request": {
         "method": "POST",
         "header": [
@@ -291,7 +291,7 @@
           "listen": "test",
           "script": {
             "exec": [
-              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.image && json.image.imageId); pm.collectionVariables.set('imageId', json.image.imageId); pm.collectionVariables.set('wordId', json.image.wordId); } catch(e){} }"
+              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.image); pm.collectionVariables.set('imageId', json.imageId); } catch(e){} }"
             ],
             "type": "text/javascript"
           }
@@ -299,9 +299,9 @@
       ]
     },
     {
-      "name": "images: List images",
+      "name": "images: Update image",
       "request": {
-        "method": "GET",
+        "method": "PUT",
         "header": [
           {
             "key": "Authorization",
@@ -310,12 +310,13 @@
           }
         ],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com/images",
+          "raw": "https://smart-app-u3of.onrender.com/images/{{imageId}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
-            "images"
+            "images",
+            "{{imageId}}"
           ]
         }
       }
@@ -341,7 +342,18 @@
             "{{imageId}}"
           ]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.image); pm.collectionVariables.set('imageId', json.imageId); pm.collectionVariables.set('wordId', json.wordId); } catch(e){} }"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
     },
     {
       "name": "images: Delete image",
@@ -367,7 +379,7 @@
       }
     },
     {
-      "name": "Flashcards: Create Flashcard",
+      "name": "Translation: Translate Text",
       "request": {
         "method": "POST",
         "header": [
@@ -383,15 +395,15 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\"imageId\":\"{{imageId}}\"}"
+          "raw": "{\"originalText\":\"seagull\",\"targetLang\":\"it\"}"
         },
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com/flashcards",
+          "raw": "https://smart-app-u3of.onrender.com/translate",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
-            "flashcards"
+            "translate"
           ]
         }
       },
@@ -400,80 +412,12 @@
           "listen": "test",
           "script": {
             "exec": [
-              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); const fc = json.flashcard || json; if (fc && fc.fcId) pm.collectionVariables.set('fcId', fc.fcId); } catch(e){} }"
+              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); const word = json.word || json; if (word && word.wordId) pm.collectionVariables.set('wordId', word.wordId); } catch(e){} }"
             ],
             "type": "text/javascript"
           }
         }
       ]
-    },
-    {
-      "name": "Flashcards: List User Flashcards",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{idToken}}",
-            "type": "text"
-          }
-        ],
-        "url": {
-          "raw": "https://smart-app-u3of.onrender.com/flashcards",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "flashcards"
-          ]
-        }
-      }
-    },
-    {
-      "name": "Flashcards: Get Flashcard by Id",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{idToken}}",
-            "type": "text"
-          }
-        ],
-        "url": {
-          "raw": "https://smart-app-u3of.onrender.com/flashcards/{{fcId}}",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "flashcards",
-            "{{fcId}}"
-          ]
-        }
-      }
-    },
-    {
-      "name": "Flashcards: Delete Flashcard",
-      "request": {
-        "method": "DELETE",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{idToken}}",
-            "type": "text"
-          }
-        ],
-        "url": {
-          "raw": "https://smart-app-u3of.onrender.com/flashcards/{{fcId}}",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "flashcards",
-            "{{fcId}}"
-          ]
-        }
-      }
     },
     {
       "name": "Lists: Create List",
@@ -491,19 +435,8 @@
           }
         ],
         "body": {
-          "mode": "formdata",
-          "formdata": [
-            {
-              "key": "image",
-              "type": "file",
-              "src": "C:\\Users\\zhuji\\OneDrive\\Desktop\\seagull-perched-on-rock-421015772.jpg"
-            },
-            {
-              "key": "listName",
-              "value": "my vocab",
-              "type": "text"
-            }
-          ]
+          "mode": "raw",
+          "raw": "{\"listName\":\"My Vocab\"}"
         },
         "url": {
           "raw": "https://smart-app-u3of.onrender.com/lists",
@@ -621,19 +554,8 @@
           }
         ],
         "body": {
-          "mode": "formdata",
-          "formdata": [
-            {
-              "key": "image",
-              "type": "file",
-              "src": "C:\\Users\\zhuji\\OneDrive\\Desktop\\seagull-perched-on-rock-421015772.jpg"
-            },
-            {
-              "key": "listName",
-              "value": "My Vocab Updated",
-              "type": "text"
-            }
-          ]
+          "mode": "raw",
+          "raw": "{\"listName\":\"My Vocab Updated\"}"
         },
         "url": {
           "raw": "https://smart-app-u3of.onrender.com/lists/{{listId}}",
@@ -730,7 +652,7 @@
           "listen": "test",
           "script": {
             "exec": [
-              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.code) pm.collectionVariables.set('shareCode', json.code); } catch(e){} }"
+              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.shareCode) pm.collectionVariables.set('shareCode', json.shareCode); } catch(e){} }"
             ],
             "type": "text/javascript"
           }

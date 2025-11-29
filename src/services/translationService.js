@@ -71,7 +71,7 @@ export async function updateTranslationService(originalWord, translatedWord, tar
   await db.collection("words").doc(wordId).set(wordDoc, { merge: true });
   console.log("Word inserted.");
 
-  return { ok: true, wordId, wordDoc };
+  return { updateTranslationService_ok: true, ...wordDoc };
 }// end updateTranslationService
 
 
@@ -90,7 +90,7 @@ export async function translationExistsService(originalText, targetLang = "auto"
     existing = (data.translations && data.translations[targetLang]) ? data.translations[targetLang] : null;
     //const pronunciation = (data.pronunciations && data.pronunciations[targetLang]) ? data.pronunciations[targetLang] : null;
     if (existing !== null) {
-      return { existing, wordId };
+      return { translatedWord: existing, wordId: wordId};
     }
   }
   return false;

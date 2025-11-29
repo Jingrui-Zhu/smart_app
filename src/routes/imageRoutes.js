@@ -12,7 +12,10 @@ router.post("/", requireAuth, upload.single("image"), imageService.createImageHa
 // get a image - GET /images/:imageId
 router.get("/:imageId", requireAuth, imageService.getImageHandler);
 // List all images for user - GET /images
-router.get("/", requireAuth, imageService.listAllUserImageHandler);
+//router.get("/", requireAuth, imageService.listAllUserImageHandler);
+
+// Update an image - PUT /images/:imageId
+router.put("/:imageId", requireAuth, imageService.updateImageHander);
 
 // Delete a image - DELETE /images/:imageId
 router.delete("/:imageId", requireAuth, imageService.deleteImageHandler);

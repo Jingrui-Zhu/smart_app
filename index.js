@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import authRouter from "./src/routes/authRoutes.js";
 import translationRouter from "./src/routes/translationRoutes.js";
 import imageRouter from "./src/routes/imageRoutes.js";
-import flashcardRouter from "./src/routes/flashcardRoutes.js";
+//import flashcardRouter from "./src/routes/flashcardRoutes.js";
 import listRouter from "./src/routes/listRoutes.js";
 import { getSharedListPublicHandler } from "./src/controllers/listController.js";
 dotenv.config();
@@ -21,7 +21,7 @@ app.get("/", (req, res) => res.json({ message: "Visual Dictionary backend runnin
 app.use("/auth", authRouter);
 app.use("/translate", translationRouter);
 app.use("/images", imageRouter);
-app.use("/flashcards", flashcardRouter);
+//app.use("/flashcards", flashcardRouter);
 app.use("/lists", listRouter);
 
 // Public endpoint to retrieve a shared list by token (no auth required)

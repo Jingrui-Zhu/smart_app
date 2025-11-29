@@ -35,8 +35,8 @@ export const createImageHandler = async (req, res) => {
         }
 
         const result = await imageService.createImageService(uid, fileBuffer, imageBase64, imageMimeType, imageSizeBytes, objectName, accuracy, targetLang);
-        if(result.createImage_ok === false) {
-            return  res.json({ message: "image already exists", ...result });
+        if (result.createImage_ok === false) {
+            return res.json({ message: "image already exists", ...result });
         }
         return res.json({ message: "image creation successful", ...result });
     } catch (err) {
@@ -44,6 +44,18 @@ export const createImageHandler = async (req, res) => {
         return res.json({ error: err.message || "Failed to create image" });
     }
 } // end createImageHandler
+
+export const updateImageHander = async (req, res) => {
+    try {
+        const uid = req.user?.uid;
+        const { imageId } = req.params;
+        const updated = await imageService.updateImageService(uid, imageId);
+        return res.json({ message: "Image updated successfully", ...updated });
+    } catch (error) {
+        console.error("updateImage controller error:", error);
+        return res.json({ error: error.message || "Failed to update image" });
+    }
+}// end updateImageHander
 
 export const getImageHandler = async (req, res) => {
     try {
@@ -75,7 +87,7 @@ export const listAllUserImageHandler = async (req, res) => {
     try {
         const uid = req.user?.uid;
         const images = await imageService.listAllUserImageService(uid);
-        return res.json({  message: "List images successful", ...images });
+        return res.json({ message: "List images successful", ...images });
     } catch (error) {
         console.error("listAllUserImage controller error:", error);
         return res.json({ error: error.message || "Failed to list images" });

@@ -10,24 +10,23 @@ export const translateText = async (req, res) => {
       return res.json({ error: "originalText and targetLang are required" });
     }
 
-    // if translation already exists, return it
-    const exists = await translationService.translationExistsService(originalText, targetLang);
-    console.log("Translation exists for target language:", exists);
-
     // if translation in target language exists, return it
+    const exists = await translationService.translationExistsService(originalText, targetLang);
     if (exists) {
-      return res.json({ ok: true, existed: true, message: "Translation exists", wordId: exists.wordId, originalText: originalText, translatedText: exists.existing, targetLang: targetLang });
+      console.log("Translation exists for target language:", originalText);
+      return res.json({ exists: true, message: "Translation exists", wordId: exists.wordId, originalText: originalText, translatedWord: exists.translatedWord, targetLang: targetLang });
     }
 
     // otherwise, perform translation
     const translatedTargetLangResult = await translationService.translateTextService(originalText, "auto", targetLang);
     console.log("translated to target language:", translatedTargetLangResult);
+    const translatedText = translatedTargetLangResult.translatedText;
 
     // save the translation
-    await translationService.updateTranslationService(originalText, translatedTargetLangResult.translatedText, targetLang);
+    const result = await translationService.updateTranslationService(originalText, translatedText, targetLang);
     console.log("translation saved to database.");
 
-    return res.json({ ok: true, originalText: originalText, translatedText: translatedTargetLangResult.translatedText, targetLang: targetLang });
+    return res.json({ message: "Translation successful", ...result });
 
   } catch (error) {
     console.error("translateText error:", error);
