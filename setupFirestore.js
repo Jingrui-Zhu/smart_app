@@ -22,7 +22,7 @@ async function main() {
     password: "password123",
     displayName: "Demo User",
     //nativeLang: "en",
-    //preferredTargetLang: "it",
+    preferredLang: "it",
     avatarId: 1,
     createdAt: now,
     lastSeen: now
@@ -76,7 +76,7 @@ async function main() {
     listId: listId,
     listName: "favorite",
     description: "My favorite words",
-    //listLanguage: ["en", "it"],
+    preferredLang: userDoc.preferredLang,
     isDefault: true,
     visibility: "private",
     imported: false,
@@ -106,7 +106,7 @@ async function main() {
   const flashcardId = `fc_${imageId}`;
   const flashcardDoc = {
     fcId: flashcardId,
-    imageRef: imageId,
+    imageId: imageId,
     wordId: wordId,
     originalWord: imageDoc.objectName,
     translatedWord: imageDoc.translatedWord,

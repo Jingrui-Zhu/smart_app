@@ -77,13 +77,13 @@ export async function createUserLangListService(uid, targetLang) {
     listId: listId,
     listName: `Language: ${targetLang}`,
     description: `Words translated to ${targetLang}`,
-    listLanguage: [targetLang],
+    listLanguage: targetLang,
     isDefault: false,
     visibility: "private",
     imported: false,
     createdAt: now,
     updatedAt: now,
-    wordCount: 0
+    wordCount: 0,
   }
   console.log("Creating user language list: ", listId);
   await listRef.set(listDoc);
@@ -154,18 +154,19 @@ export async function addItemToListService(uid, listId, wordId, imageId) {
 
   const langListId = `lang_list_${targetLang}_${uid}`;
   const LangListRef = userRef.collection("lists").doc(langListId);
-  const LangListSnap = await LangListRef.get();
-  // if the target language list does not exist, create it
+  let LangListSnap = await LangListRef.get();
+  // If the language list doesn't exist, create it and re-read the ref
   if (!LangListSnap.exists) {
     await createUserLangListService(uid, targetLang);
+    LangListSnap = await LangListRef.get();
   }
 
   // check if the item already exists in the list
-  const itemRef = userRef.collection("lists").doc(listId).collection("items").doc(wordId);
+  const itemRef = listRef.collection("items").doc(wordId);
   const itemSnap = await itemRef.get();
-  const langItemRef = userRef.collection("lists").doc(langListId).collection("items").doc(wordId);
+  const langItemRef = LangListRef.collection("items").doc(wordId);
   const langItemSnap = await langItemRef.get();
-  if (itemSnap.exists && langItemSnap.exists) throw new Error("addItemToListService: Item already exists in list");
+  if (itemSnap.exists && langItemSnap.exists) return { addItemToList_ok: false, message: "Item already exists in the list" };
 
   // create the item
   const now = new Date().toISOString();
@@ -183,7 +184,9 @@ export async function addItemToListService(uid, listId, wordId, imageId) {
   console.log("Adding item to list: ", wordId, " - listId: ", listId);
   await itemRef.set(itemDoc);
   console.log("Item added to list.");
-  const updateWordCountList = listSnap.data().wordCount + 1;
+  const listWordCount = listSnap.data().wordCount || 0;
+  const updateWordCountList = listWordCount + 1;
+  console.log("list word count: ", listWordCount, " - updated: ", updateWordCountList);
   // update wordCount in list
   await listRef.update({
     wordCount: updateWordCountList,
@@ -195,7 +198,9 @@ export async function addItemToListService(uid, listId, wordId, imageId) {
   console.log("Adding item to language list: ", wordId, " - listId: ", langListId);
   await langItemRef.set(itemDoc);
   console.log("Item added to language list.");
-  const updateWordCountLangList = LangListSnap.data().wordCount + 1;
+  const langListWordCount = LangListSnap.data().wordCount || 0;
+  const updateWordCountLangList = langListWordCount + 1;
+  console.log("language list word count: ", langListWordCount, " - updated: ", updateWordCountLangList);
   // update wordCount in language list
   await LangListRef.update({
     wordCount: updateWordCountLangList,

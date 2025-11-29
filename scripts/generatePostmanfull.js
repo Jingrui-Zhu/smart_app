@@ -87,10 +87,17 @@ async function main() {
     request: {
       method: "POST",
       header: [{ key: "Content-Type", value: "application/json" }],
-      body: { mode: "raw", raw: JSON.stringify({ email: "{{email}}", password: "{{password}}", name: "Demo User", avatarId: 2 }) },
+      body: { mode: "raw", raw: JSON.stringify({ email: "{{email}}", password: "{{password}}", name: "Demo User", preferredLang: "en", avatarId: 2 }) },
       url: { raw: `${baseUrl}/auth/signup`, host: ["{{baseUrl}}"], path: ["auth", "signup"] }
     },
-    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201) console.log('Signup OK');"], type: "text/javascript" } }]
+    event: [{
+      listen: "test",
+      script: {
+        exec: [
+          "if (pm.response.code === 201) console.log('Signup OK');"
+        ], type: "text/javascript"
+      }
+    }]
   });
 
   // login (manual)
@@ -102,7 +109,14 @@ async function main() {
       body: { mode: "raw", raw: JSON.stringify({ email: "{{email}}", password: "{{password}}" }) },
       url: { raw: `${baseUrl}/auth/login`, host: ["{{baseUrl}}"], path: ["auth", "login"] }
     },
-    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 200) { try { const json = pm.response.json(); if (json.idToken) pm.collectionVariables.set('idToken', json.idToken); } catch(e){} }"], type: "text/javascript" } }]
+    event: [{
+      listen: "test",
+      script: {
+        exec: [
+          "if (pm.response.code === 200) { try { const json = pm.response.json(); if (json.idToken) pm.collectionVariables.set('idToken', json.idToken); } catch(e){} }"
+        ], type: "text/javascript"
+      }
+    }]
   });
 
   // get profile
@@ -115,6 +129,7 @@ async function main() {
     }
   })
 
+  // update profile
   collection.item.push({
     name: "Auth: Update User Profile",
     request: {
@@ -153,7 +168,14 @@ async function main() {
       ],
       url: { raw: `${baseUrl}/auth/logout`, host: ["{{baseUrl}}"], path: ["auth", "logout"] }
     },
-    event: [{ listen: "test", script: { exec: ["pm.collectionVariables.set('idToken', '');"], type: "text/javascript" } }]
+    event: [{
+      listen: "test",
+      script: {
+        exec: [
+          "pm.collectionVariables.set('idToken', '');"
+        ], type: "text/javascript"
+      }
+    }]
   });
 
   // ---------------------IMAGES
@@ -174,7 +196,14 @@ async function main() {
       },
       url: { raw: `${baseUrl}/images`, host: ["{{baseUrl}}"], path: ["images"] }
     },
-    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.image && json.image.imageId); pm.collectionVariables.set('imageId', json.image.imageId); pm.collectionVariables.set('wordId', json.image.wordId); } catch(e){} }"], type: "text/javascript" } }]
+    event: [{
+      listen: "test",
+      script: {
+        exec: [
+          "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.image); pm.collectionVariables.set('imageId', json.imageId); pm.collectionVariables.set('wordId', json.wordId); } catch(e){} }"
+        ], type: "text/javascript"
+      }
+    }]
   });
 
   // list images
@@ -194,7 +223,15 @@ async function main() {
       method: "GET",
       header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
       url: { raw: `${baseUrl}/images/{{imageId}}`, host: ["{{baseUrl}}"], path: ["images", "{{imageId}}"] }
-    }
+    },
+    event: [{
+      listen: "test",
+      script: {
+        exec: [
+          "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.image); pm.collectionVariables.set('imageId', json.imageId); pm.collectionVariables.set('wordId', json.wordId); } catch(e){} }"
+        ], type: "text/javascript"
+      }
+    }]
   });
 
   // remove a image by id
@@ -220,7 +257,8 @@ async function main() {
       url: { raw: `${baseUrl}/flashcards`, host: ["{{baseUrl}}"], path: ["flashcards"] },
     },
     event: [{
-      listen: "test", script: {
+      listen: "test",
+      script: {
         exec: [
           "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); const fc = json.flashcard || json; if (fc && fc.fcId) pm.collectionVariables.set('fcId', fc.fcId); } catch(e){} }"
         ], type: "text/javascript"
@@ -277,7 +315,14 @@ async function main() {
       },
       url: { raw: `${baseUrl}/lists`, host: ["{{baseUrl}}"], path: ["lists"] },
     },
-    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.listId) pm.collectionVariables.set('listId', json.listId); } catch(e){} }"], type: "text/javascript" } }]
+    event: [{
+      listen: "test",
+      script: {
+        exec: [
+          "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.listId) pm.collectionVariables.set('listId', json.listId); } catch(e){} }"
+        ], type: "text/javascript"
+      }
+    }]
   });
 
   // list user lists
@@ -366,7 +411,12 @@ async function main() {
       body: { mode: "raw", raw: JSON.stringify({ listId: "{{listId}}" }) },
       url: { raw: `${baseUrl}/lists/share`, host: ["{{baseUrl}}"], path: ["lists", "share"] }
     },
-    event: [{ listen: "test", script: { exec: ["if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.code) pm.collectionVariables.set('shareCode', json.code); } catch(e){} }"], type: "text/javascript" } }]
+    event: [{ 
+      listen: "test", 
+      script: {
+         exec: [
+          "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.shareCode) pm.collectionVariables.set('shareCode', json.shareCode); } catch(e){} }"
+        ], type: "text/javascript" } }]
   });
 
   // view the shared list

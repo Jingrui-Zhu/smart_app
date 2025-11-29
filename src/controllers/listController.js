@@ -80,6 +80,9 @@ export const addItemToListHandler = async (req, res) => {
         const { listId } = req.params;
         const { wordId, imageId } = req.body;
         const result = await listService.addItemToListService(uid, listId, wordId, imageId);
+        if (!result.addItemToList_ok) {
+            return res.json({ error: result.message || "Failed to add item to list" });
+        }
         return res.json({ message: "Item added to list successfully", ...result });
     } catch (err) {
         console.error("addItemToList controller error:", err);
