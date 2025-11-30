@@ -327,6 +327,8 @@ export async function createSharedListCodeService(uid, listId) {
 export async function getSharedListService(sharedCode) {
   if (!sharedCode) throw new Error("getSharedListService: sharedCode is required");
 
+  // don't know how to decypher ownerId and listId from sharedCode alone without querying the collection
+  /*
   let uid = null;
   let listId = null;
   let listSnap = null;
@@ -347,30 +349,44 @@ export async function getSharedListService(sharedCode) {
 
   const listData = listSnap.data();
   // enforce public visibility
-  /*
-    if (!listData || listData.visibility !== "public") {
-      throw new Error("getSharedListService: List is not public");
-    }
-  */
+  //
+  //  if (!listData || listData.visibility !== "public") {
+  //    throw new Error("getSharedListService: List is not public");
+  //  }
+  //
 
+  // get items in the list
   const itemsSnap = await listRef.collection("items").get();
-  const items = itemsSnap.docs.map(d => ({ itemId: d.id, ...d.data() }));
+  const items = itemsSnap.docs.map(d => ({ ...d.data() }));
+  */
+  
+  // temporarily workaround by querying sharedLists collection
+  const shared = await db.collection("sharedLists").where("sharedCode", "==", sharedCode).limit(1).get();
+  if (shared.empty) throw new Error("getSharedListService: Shared list not found");
+  const sharedData = shared.docs[0].data();
+  const uid = sharedData.ownerId;
+  const listId = sharedData.listId;
+  const listSnap = await db.collection("users").doc(uid).collection("lists").doc(listId).get();
+  const listData = listSnap.data();
+  const itemsSnap = await db.collection("users").doc(uid).collection("lists").doc(listId).collection("items").get();
+  const items = itemsSnap.docs.map(d => ({ ...d.data() }));
 
-  return { getSharedList_ok: true, ownerId: uid, listId, list: { id: listId, ...listData }, items };
+  return { getSharedList_ok: true, sharedList: { ...sharedData }, list: { ...listData }, items: items };
 } // end getSharedListService
 
 export async function importSharedListService(uid, sharedCode) {
   if (!uid) throw new Error("importSharedListService: uid is required");
   if (!sharedCode) throw new Error("importSharedListService: code is required");
   const shared = await getSharedListService(sharedCode);
-  const { list, items, listId, ownerId } = shared;
+  const { sharedList, list, items } = shared;
+  const ownerId = sharedList.ownerId;
+  const listId = sharedList.listId;
 
   const newListId = `import_${listId}`;
-  const newListRef = db.collection("users").doc(uid).collection("lists").doc(newListId);
 
   // create the new list
   const now = new Date().toISOString();
-  await newListRef.set({
+  const importedData = {
     listId: newListId,
     listName: (list.listName || "Imported List") + " (Imported)",
     description: list.description || " ",
@@ -382,15 +398,18 @@ export async function importSharedListService(uid, sharedCode) {
     importedAt: now,
     updatedAt: now,
     wordCount: items.length
-  });
+  };
+  console.log("Creating imported list: ", newListId);
+  await db.collection("users").doc(uid).collection("lists").doc(newListId).set(importedData);
+  console.log("Imported list created.");
 
-  // copy items
-  const batch = db.batch();
-  items.forEach(item => {
-    const newItemRef = newListRef.collection("items").doc(item.wordId);
-    batch.set(newItemRef, item);
-  });
-  await batch.commit();
+  // add items to the new list
+  for (const item of items) {
+    const itemRef = db.collection("users").doc(uid).collection("lists").doc(newListId).collection("items").doc(item.wordId);
+    console.log("Adding item to imported list: ", item.wordId);
+    await itemRef.set(item);
+    console.log("Item added to imported list.");
+  }
 
-  return { importList_ok: true, importedListId: newListId, count: items.length };
+  return { importList_ok: true, importedList: { ...importedData } };
 }// end importSharedListService
