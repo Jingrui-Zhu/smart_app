@@ -115,7 +115,7 @@ async function main() {
     name: "Auth: Get profile",
     request: {
       method: "GET",
-      header: [{ key: "Content-Type", value: "Bearer {{idToken}}", type: "text" }],
+      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
       url: { raw: `${baseUrl}/auth/profile`, host: ["{{baseUrl}}"], path: ["auth", "profile"] }
     }
   })
@@ -408,7 +408,7 @@ async function main() {
       ],
       body: {
         mode: "raw", raw: JSON.stringify({ wordId: "{{wordId}}", imageId: "{{imageId}}", listIds: ["{{listId}}"] }),
-        url: { raw: `${baseUrl}/lists/items/`, host: ["{{baseUrl}}"], path: ["lists", "items"] },
+        url: { raw: `${baseUrl}/lists/items`, host: ["{{baseUrl}}"], path: ["lists", "items"] },
       }
     }
   });
@@ -423,15 +423,16 @@ async function main() {
         { key: "Content-Type", value: "application/json" }
       ],
       body: {
-        /*
-     mode: "formdata",
-     formdata: [
-       { key: "image", type: "file", src: exampleImagePath },
-       { key: "listName", value: "My Vocab Updated", type: "text" }
-     ]
-       */
-        mode: "raw",
-        raw: JSON.stringify({ listName: "My Vocab Updated" })
+        mode: "formdata",
+        formdata: [
+          { key: "image", type: "file", src: exampleImagePath },
+          { key: "listName", value: "My Vocab Updated", type: "text" },
+          //{ key: "removeImage", value: "false", type: "text" }
+        ]
+          /*
+          mode: "raw",
+          raw: JSON.stringify({ listName: "My Vocab Updated" })
+          */
       },
       url: { raw: `${baseUrl}/lists/{{listId}}`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}"] },
     }
@@ -473,7 +474,7 @@ async function main() {
       listen: "test",
       script: {
         exec: [
-            "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.sharedCode) pm.collectionVariables.set('sharedCode', json.sharedCode); } catch(e){} }"
+          "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.sharedCode) pm.collectionVariables.set('sharedCode', json.sharedCode); } catch(e){} }"
         ], type: "text/javascript"
       }
     }]

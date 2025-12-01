@@ -137,13 +137,14 @@ export const updateListHandler = async (req, res) => {
     try {
         const uid = req.user?.uid || null;
         const { listId } = req.params;
-        const { listName } = req.body;
+        const { listName, removeImage } = req.body;
 
         // handle image
         let fileBuffer = null;
         let imageBase64 = null;
         let imageMimeType = null;
         let imageSizeBytes = 0;
+        let removeImageFlag = req.body.removeImage || false;
 
         if (req.file) {
             fileBuffer = req.file.buffer;
@@ -163,7 +164,7 @@ export const updateListHandler = async (req, res) => {
             }
         }
 
-        const result = await listService.updateListService(uid, listId, listName, fileBuffer, imageBase64, imageMimeType, imageSizeBytes);
+        const result = await listService.updateListService(uid, listId, listName, fileBuffer, imageBase64, imageMimeType, imageSizeBytes, removeImageFlag);
         return res.json({ message: "List updated successfully", ...result });
     } catch (error) {
         console.error("updateList controller error:", error);

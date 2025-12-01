@@ -365,7 +365,7 @@ export async function removeItemFromListService(uid, listId, wordId) {
   return { removeItemFromList_ok: true };
 }// end removeItemFromListService
 
-export async function updateListService(uid, listId, listName, fileBuffer = null, imageBase64 = null, imageMimeType = null, imageSizeBytes = 0) {
+export async function updateListService(uid, listId, listName, fileBuffer = null, imageBase64 = null, imageMimeType = null, imageSizeBytes = 0, removeImage = false) {
   if (!uid) throw new Error("updateListService: uid is required");
   if (!listId) throw new Error("updateListService: listId is required");
   if (!listName) throw new Error("updateListService: listName is required");
@@ -391,11 +391,14 @@ export async function updateListService(uid, listId, listName, fileBuffer = null
     update.listName = listName;
   }
 
-  // Always update image fields: if neither fileBuffer nor imageBase64 provided, clear image fields
-  if (fileBuffer || imageBase64) {
-    update.imageBase64 = base64 || null;
-    update.imageMimeType = mime || null;
-    update.imageSizeBytes = size || 0;
+  if (removeImage) {
+    update.imageBase64 = null;
+    update.imageMimeType = null;
+    update.imageSizeBytes = 0;
+  } else if (fileBuffer || imageBase64) {
+    update.imageBase64 = base64;
+    update.imageMimeType = mime;
+    update.imageSizeBytes = size;
   }
 
   const now = new Date().toISOString();

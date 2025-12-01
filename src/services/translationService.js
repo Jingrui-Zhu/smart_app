@@ -59,7 +59,8 @@ export async function updateTranslationService(originalWord, translatedWord, tar
   if (!translatedWord) throw new Error("updateTranslationService: translatedWord is required");
   if (!targetLang) throw new Error("updateTranslationService: targetLang is required");
 
-  const wordId = `id_${originalWord}`;
+  const originalWordId = originalWord.toLowerCase().replace(/\s+/g, "_");
+  const wordId = `id_${originalWordId}`;
   const wordDoc = {
     wordId: wordId,
     originalWord: originalWord,

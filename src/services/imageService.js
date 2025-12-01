@@ -29,7 +29,7 @@ export async function createImageService(uid, fileBuffer = null, imageBase64 = n
         size = fileBuffer.length;
     }
 
-    objectName = objectName.toLowerCase();
+    objectName = objectName.toLowerCase().replace(/\s+/g, "_");
     const imageId = `img_${objectName}_${targetLang}_${uid}`;
     const imageRef = userRef.collection("images").doc(imageId);
     const imageSnap = await imageRef.get();
