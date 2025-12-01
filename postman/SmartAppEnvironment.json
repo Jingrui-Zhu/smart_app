@@ -1,5 +1,5 @@
 {
-  "id": "smart-app-env-1764451467893",
+  "id": "smart-app-env-1764603541195",
   "name": "Smart App Auto Environment",
   "values": [
     {
@@ -9,7 +9,7 @@
     },
     {
       "key": "email",
-      "value": "test.user2@example.it",
+      "value": "test.user4@example.it",
       "enabled": true
     },
     {
@@ -24,7 +24,7 @@
     },
     {
       "key": "idToken",
-      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQ0NTE0NjUsInVzZXJfaWQiOiJqSG1WTnBSQUFsWGIwSmFtdVRRNkNjS0RzZTQzIiwic3ViIjoiakhtVk5wUkFBbFhiMEphbXVUUTZDY0tEc2U0MyIsImlhdCI6MTc2NDQ1MTQ2NSwiZXhwIjoxNzY0NDU1MDY1LCJlbWFpbCI6InRlc3QudXNlcjJAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXIyQGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.VjAqiQP-eildwgpgjhVWTJuufLSXyDUTuC7N9Gh7eE76K2Hca2j4eo3thX7dsaByWKuN4ITZCV-XYqFZ-jODs4ILk7z475WKrAQK403inrZ_dUFaUgiZ6Y1C4fBHb-wYn4ZLTow6itv0nZSxE7ixXZgBzTdJ8PSVwRHeOHkSAgSnEFBc-RDC6fTHYwMgJk6MamcQ-fCvJyg0ksjRhEfZNiU6IM2A1DO3niZ-PSXc4lsjUC0XnQODwyBZsB_JWi60tW8zOC_CLfCFAf4hCascZlLjEerlHEFEVmAV6OEkZf2i2xXmgxzcf644BL49DkqGbm-KjrarAmO3spj80Qj5TA",
+      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQ2MDM1MzcsInVzZXJfaWQiOiI2YjFFZWVSbHcwaG55QXVLZzhRY0F6NVZ6RUEzIiwic3ViIjoiNmIxRWVlUmx3MGhueUF1S2c4UWNBejVWekVBMyIsImlhdCI6MTc2NDYwMzUzNywiZXhwIjoxNzY0NjA3MTM3LCJlbWFpbCI6InRlc3QudXNlcjRAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXI0QGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.d7ZWjHKj8bALsZBpMeiRqsv_wbQ0Lt6cAOyKC21PLkTFmg0nTXF-mGXpTmKGj8YIqpE3metaelGE_sFFAMAyhV5Zt1EBBGo-nQyufHoAMglj6jP7P4M4i8zyM6vQoaN2yFOfhSAVmhvNOO5MjLiQ1oG-YjDk61tMm1VVWFjlu0hOPsR7qRxHrCKSjZuHQvwZWjarsE5l-cWnoIwRg8gZ_TMj4ExxqXZQv9H4U6HavXOJFjRTE1q4OM0zLyILtENr0EDHROTDWuKkQQhiqcZjwtjab3bqg5csFfYqm3xPWS8ccKnbu0kDEdhbRQlkZ-Rro3RAgmDP72ffr88IH2ezRg",
       "enabled": true
     },
     {
@@ -38,17 +38,12 @@
       "enabled": true
     },
     {
-      "key": "fcId",
-      "value": "",
-      "enabled": true
-    },
-    {
       "key": "listId",
       "value": "",
       "enabled": true
     },
     {
-      "key": "shareCode",
+      "key": "sharedCode",
       "value": "",
       "enabled": true
     }

@@ -126,6 +126,7 @@ export async function getAllItemsInListService(uid, listId) {
   return { getAllItemsInList_ok: true, items };
 }// end getAllItemsInListService
 
+/*
 export async function addItemToListService(uid, listId, wordId, imageId) {
   if (!uid) throw new Error("addItemToListService: uid is required");
   if (!listId) throw new Error("addItemToListService: listId is required");
@@ -210,6 +211,122 @@ export async function addItemToListService(uid, listId, wordId, imageId) {
 
   return { addItemToList_ok: true, ...itemDoc };
 }// end addItemToListService
+*/
+
+// Best-effort: add the same word to multiple lists (up to a small limit)
+// Returns per-list results and a summary. This will attempt each list independently
+// and will not roll back partial successes.
+export async function addItemToMultipleListsService(uid, listIds, wordId, imageId) {
+  if (!uid) throw new Error("addItemToMultipleListsService: uid is required");
+  if (!listIds) throw new Error("addItemToMultipleListsService: listIds is required");
+  if (!wordId) throw new Error("addItemToMultipleListsService: wordId is required");
+  if (!imageId) throw new Error("addItemToMultipleListsService: imageId is required");
+
+  // normalize single value to array
+  if (!Array.isArray(listIds)) listIds = [listIds];
+
+  // protect from huge requests
+  const MAX_LISTS = 5;
+  if (listIds.length === 0) throw new Error("addItemToMultipleListsService: listIds must contain at least one id");
+  if (listIds.length > MAX_LISTS) throw new Error(`addItemToMultipleListsService: too many lists (max ${MAX_LISTS})`);
+
+  // validate user + image + word once
+  const userRef = db.collection("users").doc(uid);
+  const userSnap = await userRef.get();
+  if (!userSnap.exists) throw new Error("addItemToMultipleListsService: User not found");
+
+  const imageRef = userRef.collection("images").doc(imageId);
+  const imageSnap = await imageRef.get();
+  if (!imageSnap.exists) throw new Error("addItemToMultipleListsService: image not found - " + imageId);
+  const imageData = imageSnap.data();
+  const targetLang = imageData.targetLang;
+
+  const wordRef = db.collection("words").doc(wordId);
+  const wordSnap = await wordRef.get();
+  if (!wordSnap.exists) throw new Error("addItemToMultipleListsService: Word not found - " + wordId);
+  const wordData = wordSnap.data();
+
+  // ensure language list exists (create if missing)
+  const langListId = `lang_list_${targetLang}_${uid}`;
+  const LangListRef = userRef.collection("lists").doc(langListId);
+  let LangListSnap = await LangListRef.get();
+  if (!LangListSnap.exists) {
+    await createUserLangListService(uid, targetLang);
+    LangListSnap = await LangListRef.get();
+  }
+
+  const now = new Date().toISOString();
+  // contains the per-list storage results
+  const results = [];
+  let langItemAdded = false;
+
+  // Add language item once if missing
+  const langItemRef = LangListRef.collection("items").doc(wordId);
+  const langItemSnap = await langItemRef.get();
+  if (!langItemSnap.exists) {
+    try {
+      await langItemRef.set({
+        wordId,
+        originalWord: wordData.originalWord,
+        translatedWord: wordData.translations[targetLang],
+        translatedLang: targetLang,
+        imageId,
+        note: " ",
+        addedAt: now,
+      });
+      const langListWordCount = LangListSnap.data().wordCount || 0;
+      const updateWordCountLangList = langListWordCount + 1;
+      await LangListRef.update({ wordCount: updateWordCountLangList, updatedAt: now });
+      langItemAdded = true;
+      console.log("Item added to language list.");
+    } catch (err) {
+      // record but continue; language list failure shouldn't block per-list attempts
+      console.error("Failed to add item to language list:", err);
+    }
+  }
+
+  // iterate target lists and attempt add
+  for (const lid of listIds) {
+    try {
+      const listRef = userRef.collection("lists").doc(lid);
+      const listSnap = await listRef.get();
+      if (!listSnap.exists) {
+        results.push({ listId: lid, ok: false, message: "List not found" });
+        continue;
+      }
+
+      const itemRef = listRef.collection("items").doc(wordId);
+      const itemSnap = await itemRef.get();
+      if (itemSnap.exists) {
+        results.push({ listId: lid, ok: false, message: "Item already exists" });
+        continue;
+      }
+
+      // create the item in the list
+      await itemRef.set({
+        wordId,
+        originalWord: wordData.originalWord,
+        translatedWord: wordData.translations[targetLang],
+        translatedLang: targetLang,
+        imageId,
+        addedAt: now,
+      });
+
+      // increment list counter
+      const listWordCount = listSnap.data().wordCount || 0;
+      const updateWordCountList = listWordCount + 1;
+      await listRef.update({ wordCount: updateWordCountList, updatedAt: now });
+      results.push({ listId: lid, ok: true });
+    } catch (err) {
+      console.error(`Failed to add item to list ${lid}:`, err);
+      results.push({ listId: lid, ok: false, message: err.message || "Failed to add item" });
+    }
+  }
+
+  const successCount = results.filter(r => r.ok).length;
+  return { addItemToMultipleLists_ok: true, results, summary: { successCount, failedCount: results.length - successCount, langItemAdded } };
+} // end addItemToMultipleListsService
+
 
 export async function removeItemFromListService(uid, listId, wordId) {
   if (!uid) throw new Error("removeItemFromListService: uid is required");
@@ -359,7 +476,7 @@ export async function getSharedListService(sharedCode) {
   const itemsSnap = await listRef.collection("items").get();
   const items = itemsSnap.docs.map(d => ({ ...d.data() }));
   */
-  
+
   // temporarily workaround by querying sharedLists collection
   const shared = await db.collection("sharedLists").where("sharedCode", "==", sharedCode).limit(1).get();
   if (shared.empty) throw new Error("getSharedListService: Shared list not found");

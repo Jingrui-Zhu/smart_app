@@ -90,6 +90,37 @@ export const addItemToListHandler = async (req, res) => {
     }
 } // end addItemToListHandler
 
+export const addItemToMultipleListsHandler = async (req, res) => {
+    try {
+        const uid = req.user?.uid;
+        let { listIds, wordId, imageId } = req.body;
+
+        // normalize incoming payload: accept comma-separated string or array
+        if (!listIds && req.body.listId) {
+            listIds = req.body.listId;
+        }
+        // normalize listIds to array
+        if (!Array.isArray(listIds)) {
+            if (typeof listIds === 'string') {
+                // allow comma-separated
+                listIds = listIds.split(',').map(s => s.trim()).filter(Boolean);
+            } else {
+                listIds = [listIds];
+            }
+        }
+
+        // enforce max 5 lists at controller level as well
+        if (listIds.length === 0) return res.json({ error: "listIds is required" });
+        if (listIds.length > 5) return res.json({ error: "Maximum 5 lists are supported" });
+
+        const result = await listService.addItemToMultipleListsService(uid, listIds, wordId, imageId);
+        return res.json({ message: "Processed add-item requests", ...result });
+    } catch (err) {
+        console.error("addItemToMultipleLists controller error:", err);
+        return res.json({ error: err.message || "Failed to add item to lists" });
+    }
+} // end addItemToMultipleListsHandler
+
 export const removeItemFromListHandler = async (req, res) => {
     try {
         const uid = req.user?.uid;

@@ -34,7 +34,7 @@ async function main() {
   const firebaseApiKey = envApiKey || (await ask("Firebase Web API Key (FIREBASE_API_KEY): "));
 
   // Use the test account credentials you gave
-  const TEST_EMAIL = "test.user2@example.it";
+  const TEST_EMAIL = "test.user4@example.it";
   const TEST_PASSWORD = "test123";
 
   if (!baseUrl || !firebaseApiKey) {
@@ -62,7 +62,7 @@ async function main() {
   // Build Postman collection object
   const collection = {
     info: {
-      name: "Smart App Backend - Full Automated",
+      name: "Smart App Backend ",
       description: "Automatically generated Postman collection for Smart App (all endpoints except /auth/verify and /translate).",
       schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
@@ -73,9 +73,8 @@ async function main() {
       { key: "password", value: TEST_PASSWORD },
       { key: "imageId", value: "" },
       { key: "wordId", value: "" },
-      { key: "fcId", value: "" },
       { key: "listId", value: "" },
-      { key: "shareCode", value: "" }
+      { key: "sharedCode", value: "" }
     ],
     item: []
   };
@@ -89,15 +88,7 @@ async function main() {
       header: [{ key: "Content-Type", value: "application/json" }],
       body: { mode: "raw", raw: JSON.stringify({ email: "{{email}}", password: "{{password}}", name: "Demo User", preferredLang: "en", avatarId: 2 }) },
       url: { raw: `${baseUrl}/auth/signup`, host: ["{{baseUrl}}"], path: ["auth", "signup"] }
-    },
-    event: [{
-      listen: "test",
-      script: {
-        exec: [
-          "if (pm.response.code === 201) console.log('Signup OK');"
-        ], type: "text/javascript"
-      }
-    }]
+    }
   });
 
   // login (manual)
@@ -178,7 +169,7 @@ async function main() {
     }]
   });
 
-  // ---------------------IMAGES
+  // ----------------------------IMAGES
   // create entry for image
   collection.item.push({
     name: "Images: Store Image",
@@ -314,7 +305,7 @@ async function main() {
   // translate text
   collection.item.push({
     name: "Translation: Translate Text",
-    request:{
+    request: {
       method: "POST",
       header: [
         { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
@@ -347,15 +338,16 @@ async function main() {
         { key: "Content-Type", value: "application/json" }
       ],
       body: {
-        /*
+
         mode: "formdata",
         formdata: [
           { key: "image", type: "file", src: exampleImagePath },
           { key: "listName", value: "my vocab", type: "text" }
         ]
-          */
+        /*
         mode: "raw",
         raw: JSON.stringify({ listName: "My Vocab" })
+        */
       },
       url: { raw: `${baseUrl}/lists`, host: ["{{baseUrl}}"], path: ["lists"] },
     },
@@ -390,6 +382,7 @@ async function main() {
   });
 
   // add item to list
+  /*
   collection.item.push({
     name: "Lists: Add Item to List",
     request: {
@@ -400,6 +393,23 @@ async function main() {
       ],
       body: { mode: "raw", raw: JSON.stringify({ wordId: "{{wordId}}", imageId: "{{imageId}}" }) },
       url: { raw: `${baseUrl}/lists/{{listId}}/items`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}", "items"] },
+    }
+  });
+  */
+
+  // add item to multiple lists
+  collection.item.push({
+    name: "Lists: Add Item to Lists (separated by comma)",
+    request: {
+      method: "POST",
+      header: [
+        { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
+        { key: "Content-Type", value: "application/json" }
+      ],
+      body: {
+        mode: "raw", raw: JSON.stringify({ wordId: "{{wordId}}", imageId: "{{imageId}}", listIds: ["{{listId}}"] }),
+        url: { raw: `${baseUrl}/lists/items/`, host: ["{{baseUrl}}"], path: ["lists", "items"] },
+      }
     }
   });
 
@@ -413,13 +423,13 @@ async function main() {
         { key: "Content-Type", value: "application/json" }
       ],
       body: {
-           /*
-        mode: "formdata",
-        formdata: [
-          { key: "image", type: "file", src: exampleImagePath },
-          { key: "listName", value: "My Vocab Updated", type: "text" }
-        ]
-          */
+        /*
+     mode: "formdata",
+     formdata: [
+       { key: "image", type: "file", src: exampleImagePath },
+       { key: "listName", value: "My Vocab Updated", type: "text" }
+     ]
+       */
         mode: "raw",
         raw: JSON.stringify({ listName: "My Vocab Updated" })
       },
@@ -463,7 +473,7 @@ async function main() {
       listen: "test",
       script: {
         exec: [
-          "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.shareCode) pm.collectionVariables.set('shareCode', json.shareCode); } catch(e){} }"
+            "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.sharedCode) pm.collectionVariables.set('sharedCode', json.sharedCode); } catch(e){} }"
         ], type: "text/javascript"
       }
     }]
@@ -515,9 +525,8 @@ async function main() {
       { key: "idToken", value: idToken, enabled: true },
       { key: "imageId", value: "", enabled: true },
       { key: "wordId", value: "", enabled: true },
-      { key: "fcId", value: "", enabled: true },
       { key: "listId", value: "", enabled: true },
-      { key: "shareCode", value: "", enabled: true }
+      { key: "sharedCode", value: "", enabled: true }
     ]
   };
 

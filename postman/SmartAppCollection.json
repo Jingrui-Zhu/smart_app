@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "Smart App Backend - Full Automated",
+    "name": "Smart App Backend ",
     "description": "Automatically generated Postman collection for Smart App (all endpoints except /auth/verify and /translate).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -11,11 +11,11 @@
     },
     {
       "key": "idToken",
-      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQ0NTE0NjUsInVzZXJfaWQiOiJqSG1WTnBSQUFsWGIwSmFtdVRRNkNjS0RzZTQzIiwic3ViIjoiakhtVk5wUkFBbFhiMEphbXVUUTZDY0tEc2U0MyIsImlhdCI6MTc2NDQ1MTQ2NSwiZXhwIjoxNzY0NDU1MDY1LCJlbWFpbCI6InRlc3QudXNlcjJAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXIyQGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.VjAqiQP-eildwgpgjhVWTJuufLSXyDUTuC7N9Gh7eE76K2Hca2j4eo3thX7dsaByWKuN4ITZCV-XYqFZ-jODs4ILk7z475WKrAQK403inrZ_dUFaUgiZ6Y1C4fBHb-wYn4ZLTow6itv0nZSxE7ixXZgBzTdJ8PSVwRHeOHkSAgSnEFBc-RDC6fTHYwMgJk6MamcQ-fCvJyg0ksjRhEfZNiU6IM2A1DO3niZ-PSXc4lsjUC0XnQODwyBZsB_JWi60tW8zOC_CLfCFAf4hCascZlLjEerlHEFEVmAV6OEkZf2i2xXmgxzcf644BL49DkqGbm-KjrarAmO3spj80Qj5TA"
+      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQ2MDM1MzcsInVzZXJfaWQiOiI2YjFFZWVSbHcwaG55QXVLZzhRY0F6NVZ6RUEzIiwic3ViIjoiNmIxRWVlUmx3MGhueUF1S2c4UWNBejVWekVBMyIsImlhdCI6MTc2NDYwMzUzNywiZXhwIjoxNzY0NjA3MTM3LCJlbWFpbCI6InRlc3QudXNlcjRAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXI0QGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.d7ZWjHKj8bALsZBpMeiRqsv_wbQ0Lt6cAOyKC21PLkTFmg0nTXF-mGXpTmKGj8YIqpE3metaelGE_sFFAMAyhV5Zt1EBBGo-nQyufHoAMglj6jP7P4M4i8zyM6vQoaN2yFOfhSAVmhvNOO5MjLiQ1oG-YjDk61tMm1VVWFjlu0hOPsR7qRxHrCKSjZuHQvwZWjarsE5l-cWnoIwRg8gZ_TMj4ExxqXZQv9H4U6HavXOJFjRTE1q4OM0zLyILtENr0EDHROTDWuKkQQhiqcZjwtjab3bqg5csFfYqm3xPWS8ccKnbu0kDEdhbRQlkZ-Rro3RAgmDP72ffr88IH2ezRg"
     },
     {
       "key": "email",
-      "value": "test.user2@example.it"
+      "value": "test.user4@example.it"
     },
     {
       "key": "password",
@@ -30,15 +30,11 @@
       "value": ""
     },
     {
-      "key": "fcId",
-      "value": ""
-    },
-    {
       "key": "listId",
       "value": ""
     },
     {
-      "key": "shareCode",
+      "key": "sharedCode",
       "value": ""
     }
   ],
@@ -67,18 +63,7 @@
             "signup"
           ]
         }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "if (pm.response.code === 201) console.log('Signup OK');"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ]
+      }
     },
     {
       "name": "Auth: Login (manual)",
@@ -435,8 +420,19 @@
           }
         ],
         "body": {
-          "mode": "raw",
-          "raw": "{\"listName\":\"My Vocab\"}"
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "image",
+              "type": "file",
+              "src": "C:\\Users\\zhuji\\OneDrive\\Desktop\\seagull-perched-on-rock-421015772.jpg"
+            },
+            {
+              "key": "listName",
+              "value": "my vocab",
+              "type": "text"
+            }
+          ]
         },
         "url": {
           "raw": "https://smart-app-u3of.onrender.com/lists",
@@ -507,7 +503,7 @@
       }
     },
     {
-      "name": "Lists: Add Item to List",
+      "name": "Lists: Add Item to Lists (separated by comma)",
       "request": {
         "method": "POST",
         "header": [
@@ -523,18 +519,17 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\"wordId\":\"{{wordId}}\",\"imageId\":\"{{imageId}}\"}"
-        },
-        "url": {
-          "raw": "https://smart-app-u3of.onrender.com/lists/{{listId}}/items",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "lists",
-            "{{listId}}",
-            "items"
-          ]
+          "raw": "{\"wordId\":\"{{wordId}}\",\"imageId\":\"{{imageId}}\",\"listIds\":[\"{{listId}}\"]}",
+          "url": {
+            "raw": "https://smart-app-u3of.onrender.com/lists/items/",
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "path": [
+              "lists",
+              "items"
+            ]
+          }
         }
       }
     },
@@ -652,7 +647,7 @@
           "listen": "test",
           "script": {
             "exec": [
-              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.shareCode) pm.collectionVariables.set('shareCode', json.shareCode); } catch(e){} }"
+              "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); if (json.sharedCode) pm.collectionVariables.set('sharedCode', json.sharedCode); } catch(e){} }"
             ],
             "type": "text/javascript"
           }
