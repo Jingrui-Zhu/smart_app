@@ -11,7 +11,7 @@
     },
     {
       "key": "idToken",
-      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQ2MDYxMTQsInVzZXJfaWQiOiI2YjFFZWVSbHcwaG55QXVLZzhRY0F6NVZ6RUEzIiwic3ViIjoiNmIxRWVlUmx3MGhueUF1S2c4UWNBejVWekVBMyIsImlhdCI6MTc2NDYwNjExNCwiZXhwIjoxNzY0NjA5NzE0LCJlbWFpbCI6InRlc3QudXNlcjRAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXI0QGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.AoZ5E2ah-Ed6eiAH2PF-LyXpB60iHm61ZOo2kc799cHll7DOtQjIs11ayTqiG5J5LNpSfd8BippCsHcoPZhS3V2ZtM9XbDnwolkZrkJAhHN4z-YLB67YUANTsaSBUHKQC3AihTQDOp8Doo-hiMjQiLqaoaDQJ30PaQbc-7LVE__MGzX9eKKX9k8Uv7gjyK4CSeNICFKl2lAfCFjt0liZSmHj-iu3N0Vpf34EHdfBkQmBFR8ksp197T624a7zgA-QsqpqdiUp5xF1idwWdSKbwZ8sswPaYrSVTsPDR9_UmzZDj6zy08RQJGkP5zfSYhL2VjEFXk06uPtkt5sksxT-FQ"
+      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQ2Nzk4NjQsInVzZXJfaWQiOiI2YjFFZWVSbHcwaG55QXVLZzhRY0F6NVZ6RUEzIiwic3ViIjoiNmIxRWVlUmx3MGhueUF1S2c4UWNBejVWekVBMyIsImlhdCI6MTc2NDY3OTg2NCwiZXhwIjoxNzY0NjgzNDY0LCJlbWFpbCI6InRlc3QudXNlcjRAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXI0QGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.PEkH_85sPugtLw7OymleQTz01k-E9xMVa0y2KkcLUgH3NMAJJwATk3EOY5knilsF9IhbHPNaHDFyLNNhTV0i5_qpjYkQZJoEBBClb6wfSFlpNG2dANWYSIVSDkW5sHXUVFFQPqWWzRmO5mwKaRoziVePsnVdDjDkxU557sStiUoVM-TSPfoewFRP2pki9X0aIe9h-wLAgXhrQudpGnRwvDoTj2lPyi5HnidE6CjQFHJxmmDj39pTOQ6N-sOU1TehRQeq0cBSCGuC_N5ZBUVl990hIDqIlBQnpaISvFEi_YqaZsEVu8Q4E-QKdRg8oEupc4QfUv3lypuGhxvBxPf3fg"
     },
     {
       "key": "email",
@@ -677,14 +677,14 @@
           }
         ],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com/lists/shared/{{shareCode}}",
+          "raw": "https://smart-app-u3of.onrender.com/lists/share/{{sharedCode}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "lists",
-            "shared",
-            "{{shareCode}}"
+            "share",
+            "{{sharedCode}}"
           ]
         }
       }
@@ -695,14 +695,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "https://smart-app-u3of.onrender.com/shared/list/{{shareCode}}",
+          "raw": "https://smart-app-u3of.onrender.com/share/list/{{shareCode}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
-            "shared",
+            "share",
             "list",
-            "{{shareCode}}"
+            "{{sharedCode}}"
           ]
         }
       }

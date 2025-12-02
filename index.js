@@ -25,7 +25,7 @@ app.use("/images", imageRouter);
 app.use("/lists", listRouter);
 
 // Public endpoint to retrieve a shared list by token (no auth required)
-app.get("/shared/list/:sharedCode", getSharedListPublicHandler);
+app.get("/share/list/:sharedCode", getSharedListPublicHandler);
 
 app.use((err, req, res, next) => {
   res.status(400).json({

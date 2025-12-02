@@ -81,17 +81,17 @@ export async function updateTranslationService(originalWord, translatedWord, tar
 export async function translationExistsService(originalText, targetLang = "auto") {
   if (!originalText) throw new Error("translationExistsService: originalText is required");
 
-  let existing = null;
+  const originalWordId = originalText.toLowerCase().replace(/\s+/g, "_");
+  const wordId = `id_${originalWordId}`;
+
   const wordsCollection = db.collection("words");
-  let query = await wordsCollection.where("originalText", "==", originalText).limit(1).get();
-  if (!query.empty) {
-    const doc = query.docs[0];
-    const wordId = doc.id;
-    const data = doc.data();
-    existing = (data.translations && data.translations[targetLang]) ? data.translations[targetLang] : null;
+  let wordSnap = await wordsCollection.doc(wordId).get();
+  if (wordSnap.exists) {
+    const wordData = wordSnap.data();
+    let existing = (wordData.translations && wordData.translations[targetLang]) ? wordData.translations[targetLang] : null;
     //const pronunciation = (data.pronunciations && data.pronunciations[targetLang]) ? data.pronunciations[targetLang] : null;
     if (existing !== null) {
-      return { translatedWord: existing, wordId: wordId};
+      return { translatedWord: existing, wordId: wordId };
     }
   }
   return false;

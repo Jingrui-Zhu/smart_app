@@ -123,7 +123,7 @@ export async function getAllItemsInListService(uid, listId) {
   const items = itemsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   console.log("Retrieved items for user: ", uid, " - listId: ", listId, " - count: ", items.length);
 
-  return { getAllItemsInList_ok: true, items };
+  return { getAllItemsInList_ok: true, listId, items };
 }// end getAllItemsInListService
 
 /*
@@ -341,7 +341,6 @@ export async function removeItemFromListService(uid, listId, wordId) {
   const wordRef = db.collection("words").doc(wordId);
   const wordSnap = await wordRef.get();
   if (!wordSnap.exists) throw new Error("removeItemFromListService: Word not found - " + wordId);
-  const wordData = wordSnap.data();
 
   const listRef = userRef.collection("lists").doc(listId);
   const listSnap = await listRef.get();
@@ -362,13 +361,13 @@ export async function removeItemFromListService(uid, listId, wordId) {
   });
   console.log("List wordCount updated.");
 
-  return { removeItemFromList_ok: true };
+  return { removeItemFromList_ok: true, listId, wordId };
 }// end removeItemFromListService
 
 export async function updateListService(uid, listId, listName, fileBuffer = null, imageBase64 = null, imageMimeType = null, imageSizeBytes = 0, removeImage = false) {
   if (!uid) throw new Error("updateListService: uid is required");
   if (!listId) throw new Error("updateListService: listId is required");
-  if (!listName) throw new Error("updateListService: listName is required");
+  //if (!listName) throw new Error("updateListService: listName is required");
 
   const listRef = db.collection("users").doc(uid).collection("lists").doc(listId);
   const listSnap = await listRef.get();
@@ -403,7 +402,7 @@ export async function updateListService(uid, listId, listName, fileBuffer = null
 
   const now = new Date().toISOString();
   await listRef.set({ ...update, updatedAt: now }, { merge: true });
-  return { updateList_ok: true, updatedAt: now, listId };
+  return { updateList_ok: true, updatedAt: now, listId, update };
 } // end updateListService
 
 export async function createSharedListCodeService(uid, listId) {

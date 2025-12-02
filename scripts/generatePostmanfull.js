@@ -486,7 +486,7 @@ async function main() {
     request: {
       method: "GET",
       header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
-      url: { raw: `${baseUrl}/lists/shared/{{shareCode}}`, host: ["{{baseUrl}}"], path: ["lists", "shared", "{{shareCode}}"] }
+      url: { raw: `${baseUrl}/lists/share/{{sharedCode}}`, host: ["{{baseUrl}}"], path: ["lists", "share", "{{sharedCode}}"] }
     }
   });
 
@@ -496,7 +496,7 @@ async function main() {
     request: {
       method: "GET",
       header: [],
-      url: { raw: `${baseUrl}/shared/list/{{shareCode}}`, host: ["{{baseUrl}}"], path: ["shared", "list", "{{shareCode}}"] },
+      url: { raw: `${baseUrl}/share/list/{{shareCode}}`, host: ["{{baseUrl}}"], path: ["share", "list", "{{sharedCode}}"] },
     }
   });
 

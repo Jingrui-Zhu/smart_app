@@ -114,7 +114,7 @@ export const addItemToMultipleListsHandler = async (req, res) => {
         if (listIds.length > 5) return res.json({ error: "Maximum 5 lists are supported" });
 
         const result = await listService.addItemToMultipleListsService(uid, listIds, wordId, imageId);
-        return res.json({ message: "Processed add-item requests", ...result });
+        return res.json({ message: "addItemToMultipleLists successful", ...result });
     } catch (err) {
         console.error("addItemToMultipleLists controller error:", err);
         return res.json({ error: err.message || "Failed to add item to lists" });

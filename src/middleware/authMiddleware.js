@@ -14,13 +14,13 @@ export async function requireAuth(req, res, next) {
       return res.status(401).json({ ok: false, error: "Authorization token missing" });
     }
     const idToken = authHeader.split(" ")[1].trim();
-    // verifyIdToken should optionally check revocation - pass true if you implement that
+    // verifyIdToken should optionally check revocation
     const decoded = await verifyIdTokenService(idToken /*, checkRevoked? true */);
 
     // attach decoded token
     req.user = decoded;
 
-    // fetch Firestore profile (optional; do not fetch if you prefer lazy fetch in controllers)
+    // fetch Firestore profile
     try {
       const snap = await db.collection("users").doc(decoded.uid).get();
       req.profile = snap.exists ? snap.data() : null;

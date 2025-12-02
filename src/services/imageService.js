@@ -113,6 +113,7 @@ export async function updateImageService(uid, imageId){
     const objectName = imageData.objectName;
     const targetLang = imageData.targetLang;
     const exists =  await translationService.translationExistsService(objectName, targetLang);
+    console.log("Translation exists check for updateImageService: ", exists);
 
     const now = new Date().toISOString();
     const updateDoc = {
