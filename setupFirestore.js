@@ -101,28 +101,7 @@ async function main() {
   console.log("Adding word to user list");
   await db.collection("users").doc(userId).collection("lists").doc(listId).collection("items").doc(wordId).set(itemDoc);
   console.log("Word added to list: ", wordId);
-
-  // Create flashcard using the imageId as id (denormalized copy)
-  const flashcardId = `fc_${imageId}`;
-  const flashcardDoc = {
-    fcId: flashcardId,
-    imageId: imageId,
-    wordId: wordId,
-    originalWord: imageDoc.objectName,
-    translatedWord: imageDoc.translatedWord,
-    //pronunciation: wordDoc.pronunciations["it"],
-    targetLang: imageDoc.targetLang,
-    //imageDownloadUrl: imageDoc.imageDownloadUrl,
-    //familiarity: 0,
-    //tags: ["demo", "furniture"],
-    description: "Seeded flashcard for demo",
-    createdBy: userId,
-    createdAt: now,
-  };
-  console.log("Creating flashcard");
-  await db.collection("users").doc(userId).collection("flashcards").doc(flashcardId).set(flashcardDoc);
-  console.log("Flashcard inserted: ", flashcardId);
-
+ 
   console.log("Seeding complete.");
   process.exit(0);
 }

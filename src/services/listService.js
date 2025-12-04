@@ -441,12 +441,13 @@ export async function updateListService(uid, listId, listName, fileBuffer = null
     }
     update.coverImage = null;
   } else if (fileBuffer || imageBase64) {
-    console.log("updateListService: removing old cover image.");
-    if (listData.coverImage && listData.coverImage.cloudinaryPublicId) {
-      await deleteImageFromCloudinary(listData.coverImage.cloudinaryPublicId);
-    }
     listUpdate = await addCoverImage(uid, listId, listName, fileBuffer, imageBase64, imageMimeType, imageSizeBytes);
     update.coverImage = listUpdate.coverImage ? listUpdate.coverImage : listData.coverImage;
+    console.log("updateListService: cover image updated.");
+    if (listData.coverImage && listData.coverImage.cloudinaryPublicId) {
+      await deleteImageFromCloudinary(listData.coverImage.cloudinaryPublicId);
+      console.log("updateListService: removed old cover image.");
+    }
   }
 
   const now = new Date().toISOString();

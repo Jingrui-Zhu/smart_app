@@ -246,61 +246,6 @@ async function main() {
     }
   })
 
-  /*
-  // -------------------------FLASHCARDS
-  // create a flashcard
-  collection.item.push({
-    name: "Flashcards: Create Flashcard",
-    request: {
-      method: "POST",
-      header: [
-        { key: "Authorization", value: "Bearer {{idToken}}", type: "text" },
-        { key: "Content-Type", value: "application/json" }
-      ],
-      body: { mode: "raw", raw: JSON.stringify({ imageId: "{{imageId}}" }) },
-      url: { raw: `${baseUrl}/flashcards`, host: ["{{baseUrl}}"], path: ["flashcards"] },
-    },
-    event: [{
-      listen: "test",
-      script: {
-        exec: [
-          "if (pm.response.code === 201 || pm.response.code === 200) { try { const json = pm.response.json(); const fc = json.flashcard || json; if (fc && fc.fcId) pm.collectionVariables.set('fcId', fc.fcId); } catch(e){} }"
-        ], type: "text/javascript"
-      }
-    }]
-  });
-
-  // list user flashcards
-  collection.item.push({
-    name: "Flashcards: List User Flashcards",
-    request: {
-      method: "GET",
-      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
-      url: { raw: `${baseUrl}/flashcards`, host: ["{{baseUrl}}"], path: ["flashcards"] }
-    },
-  });
-
-  // fetch a flashcard by id
-  collection.item.push({
-    name: "Flashcards: Get Flashcard by Id",
-    request: {
-      method: "GET",
-      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
-      url: { raw: `${baseUrl}/flashcards/{{fcId}}`, host: ["{{baseUrl}}"], path: ["flashcards", "{{fcId}}"] },
-    }
-  });
-
-  // delete a flashcard by id
-  collection.item.push({
-    name: "Flashcards: Delete Flashcard",
-    request: {
-      method: "DELETE",
-      header: [{ key: "Authorization", value: "Bearer {{idToken}}", type: "text" }],
-      url: { raw: `${baseUrl}/flashcards/{{fcId}}`, host: ["{{baseUrl}}"], path: ["flashcards", "{{fcId}}"] },
-    }
-  });
-  */
-
   //--------------------------TRANSLATION
   // translate text
   collection.item.push({
@@ -338,7 +283,6 @@ async function main() {
         { key: "Content-Type", value: "application/json" }
       ],
       body: {
-
         mode: "formdata",
         formdata: [
           { key: "image", type: "file", src: exampleImagePath },
