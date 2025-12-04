@@ -17,18 +17,14 @@ export const createUserListHandler = async (req, res) => {
             fileBuffer = req.file.buffer;
             imageMimeType = req.file.mimetype;
             imageSizeBytes = req.file.size;
-            if (imageSizeBytes > MAX_BYTES) {
-                return res.json({ error: "Image too large" });
-            }
+            if (imageSizeBytes > MAX_BYTES) return res.json({ error: "Image too large" });
         } else if (req.body.imageBase64) {
             imageBase64 = req.body.imageBase64;
             imageMimeType = req.body.imageMimeType || "image/jpeg";
             // approximate size
             const base64Length = imageBase64.length;
             imageSizeBytes = Math.floor((base64Length * 3) / 4);
-            if (imageSizeBytes > MAX_BYTES) {
-                return res.json({ error: "Image too large" });
-            }
+            if (imageSizeBytes > MAX_BYTES) return res.json({ error: "Image too large" });
         }
 
         const list = await listService.createUserListService(uid, listName, fileBuffer, imageBase64, imageMimeType, imageSizeBytes);
@@ -79,11 +75,13 @@ export const addItemToListHandler = async (req, res) => {
         const uid = req.user?.uid;
         const { listId } = req.params;
         const { wordId, imageId } = req.body;
-        const result = await listService.addItemToListService(uid, listId, wordId, imageId);
-        if (!result.addItemToList_ok) {
-            return res.json({ error: result.message || "Failed to add item to list" });
+        // Use the multi-list service with a single list
+        const result = await listService.addItemToMultipleListsService(uid, [listId], wordId, imageId);
+        if (!result.addItemToMultipleLists_ok || result.summary.successCount === 0) {
+            const firstError = result.results[0]?.message || "Failed to add item to list";
+            return res.json({ error: firstError });
         }
-        return res.json({ message: "Item added to list successfully", ...result });
+        return res.json({ message: "Item added to list successfully", addItemToList_ok: true, ...result.results[0] });
     } catch (err) {
         console.error("addItemToList controller error:", err);
         return res.json({ error: err.message || "Failed to add item to list" });
@@ -150,18 +148,14 @@ export const updateListHandler = async (req, res) => {
             fileBuffer = req.file.buffer;
             imageMimeType = req.file.mimetype;
             imageSizeBytes = req.file.size;
-            if (imageSizeBytes > MAX_BYTES) {
-                return res.json({ error: "Image too large" });
-            }
+            if (imageSizeBytes > MAX_BYTES) return res.json({ error: "Image too large" });
         } else if (req.body.imageBase64) {
             imageBase64 = req.body.imageBase64;
             imageMimeType = req.body.imageMimeType || "image/jpeg";
             // approximate size
             const base64Length = imageBase64.length;
             imageSizeBytes = Math.floor((base64Length * 3) / 4);
-            if (imageSizeBytes > MAX_BYTES) {
-                return res.json({ error: "Image too large" });
-            }
+            if (imageSizeBytes > MAX_BYTES) return res.json({ error: "Image too large" });
         }
 
         const result = await listService.updateListService(uid, listId, listName, fileBuffer, imageBase64, imageMimeType, imageSizeBytes, removeImageFlag);

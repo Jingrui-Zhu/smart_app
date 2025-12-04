@@ -18,18 +18,14 @@ export const createImageHandler = async (req, res) => {
             fileBuffer = req.file.buffer;
             imageMimeType = req.file.mimetype;
             imageSizeBytes = req.file.size;
-            if (imageSizeBytes > MAX_BYTES) {
-                return res.json({ error: "Image too large" });
-            }
+            if (imageSizeBytes > MAX_BYTES) return res.json({ error: "Image too large" });
         } else if (req.body.imageBase64) {
             imageBase64 = req.body.imageBase64;
             imageMimeType = req.body.imageMimeType || "image/jpeg";
             // approximate size
             const base64Length = imageBase64.length;
             imageSizeBytes = Math.floor((base64Length * 3) / 4);
-            if (imageSizeBytes > MAX_BYTES) {
-                return res.json({ error: "Image too large" });
-            }
+            if (imageSizeBytes > MAX_BYTES) return res.json({ error: "Image too large" });
         } else {
             return res.json({ error: "No image provided (file or imageBase64)" });
         }
@@ -74,7 +70,6 @@ export const deleteImageHandler = async (req, res) => {
     try {
         const uid = req.user?.uid;
         const { imageId } = req.params;
-        if (!imageId) return res.json({ error: "imageId required" });
         const deleted = await imageService.deleteImageService(imageId, uid);
         return res.json({ message: "image deleted", ...deleted });
     } catch (err) {

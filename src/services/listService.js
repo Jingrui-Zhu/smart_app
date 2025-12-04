@@ -1,59 +1,95 @@
 // src/services/listService.js
 import { db, admin } from "../config/firebase.js";
+import { uploadImageToCloudinary, deleteImageFromCloudinary } from "./cloudinaryService.js";
 import crypto from "crypto";
 import dotenv from "dotenv";
 dotenv.config();
 
+/*
 function bufferToBase64(buf) {
   return buf.toString("base64");
 }
-export async function createUserListService(uid, listName, fileBuffer = null, imageBase64 = null, imageMimeType = null, imageSizeBytes = 0) {
+*/
+// Helper function to add cover image to a list
+async function addCoverImage(uid, listId, listName, fileBuffer = null, imageBase64 = null, imageMimeType = null, imageSizeBytes = null) {
+
+  let uploadResult = null;
+  const options = {
+    folder: `smart_app/image/${uid}`, // setup folder structure
+    resource_type: "image",
+    public_id: `cover_image_${listId}`, // set public_id to imageId for easier management
+    // automatic image resizing and optimization
+    transformation: [{
+      quality: "auto",
+      fetch_format: "auto"
+    }]
+  }
+
+  // upload to Cloudinary
+  if (fileBuffer) {
+    uploadResult = await uploadImageToCloudinary(fileBuffer, options);
+  } else if (imageBase64) {
+    // convert base64 string to buffer
+    const buffer = Buffer.from(imageBase64, "base64");
+    uploadResult = await uploadImageToCloudinary(buffer, options);
+  }
+
+  // update list with cover image info if uploaded
+  if (uploadResult !== null) {
+    const listUpdate = {
+      coverImage: {
+        imageMimeType: imageMimeType,
+        imageUrl: uploadResult ? uploadResult.secure_url : null,
+        cloudinaryPublicId: uploadResult ? uploadResult.public_id : null, // this should be the same as imageId
+        imageSizeBytes: uploadResult ? uploadResult.bytes : imageSizeBytes,
+      }
+    };
+    console.log("Store list cover image: ", listName, " - ", listId, " - ", listUpdate.coverImage.imageUrl);
+    await db.collection("users").doc(uid).collection("lists").doc(listId).set(listUpdate, { merge: true });
+    console.log("User list cover images inserted.");
+    return { message: "addCoverImage: Cover image added", ...listUpdate };
+  } else {
+    console.log("addCoverImage: something went wrong :( ");
+    return { message: "addCoverImage: something went wrong :(" };
+  }
+} // end addCoverImage
+
+export async function createUserListService(uid, listName, fileBuffer = null, imageBase64 = null, imageMimeType = null, imageSizeBytes = null) {
   if (!uid) throw new Error("createUserListService: uid is required");
   if (!listName) throw new Error("createUserListService: listName is required");
-
-  // If buffer provided, convert to base64
-  let base64 = imageBase64;
-  let mime = imageMimeType;
-  let size = imageSizeBytes;
-
-  if (fileBuffer) {
-    base64 = bufferToBase64(fileBuffer);
-    // caller should provide mime + size via req.file; but if not, leave mime null
-    size = fileBuffer.length;
-  }
 
   // preliminary check to ensure user exists
   const userDocSnap = await db.collection("users").doc(uid).get();
   if (!userDocSnap.exists) throw new Error("createUserListService: User not found");
 
+  // check if list with same name already exists
   const listId = `${listName.toLowerCase().replace(/\s+/g, "_")}_${uid}`;
   const listRef = db.collection("users").doc(uid).collection("lists").doc(listId);
   const listSnap = await listRef.get();
   if (listSnap.exists) throw new Error("createUserListService: List with same name already exists");
 
-  // create the list
-  //const userData = userDocSnap.data();
   const now = new Date().toISOString();
   const listDoc = {
     listId: listId,
     listName: listName,
-    description: " ",
-    //listLanguage: [userData.nativeLang, userData.preferredTargetLang],
     isDefault: false,
     visibility: "private",
     imported: false,
     createdAt: now,
     updatedAt: now,
     wordCount: 0,
-    imageMimeType: mime || null,
-    imageSizeBytes: size || 0,
-    imageBase64: base64 || null,
   };
-  console.log("Creating user list: ", listName, " - ", listId);
-  await db.collection("users").doc(uid).collection("lists").doc(listId).set(listDoc);
+  console.log("Store list data: ", listName, " - ", listId);
+  await listRef.set(listDoc);
   console.log("User list inserted.");
 
-  return { createUserList_ok: true, ...listDoc };
+  // add cover image if provided
+  let listUpdate = null;
+  if (fileBuffer || imageBase64) {
+    listUpdate = await addCoverImage(uid, listId, listName, fileBuffer, imageBase64, imageMimeType, imageSizeBytes);
+  }
+
+  return { createUserList_ok: true, ...listDoc, coverImage: listUpdate ? listUpdate.coverImage : null };
 }// end createUserListsService
 
 // function create a language-specific list for the user, if not already existing
@@ -109,6 +145,23 @@ export async function deleteUserListService(uid, listId) {
   const listRef = db.collection("users").doc(uid).collection("lists").doc(listId);
   const listSnap = await listRef.get();
   if (!listSnap.exists) throw new Error("deleteUserListService: List not found");
+
+  // Delete all items in the list
+  const itemsSnap = await listRef.collection("items").get();
+  const batch = db.batch();
+  itemsSnap.docs.forEach(doc => {
+    batch.delete(doc.ref);
+  });
+  await batch.commit();
+  console.log("Deleted items in list for user: ", uid, " - listId: ", listId);
+
+  // Delete cover image from Cloudinary if exists
+  const listData = listSnap.data();
+  if (listData.coverImage && listData.coverImage.cloudinaryPublicId) {
+    await deleteImageFromCloudinary(listData.coverImage.cloudinaryPublicId);
+  }
+
+  // Delete the list itself
   await listRef.delete();
   console.log("Deleted list for user: ", uid, " - listId: ", listId);
 
@@ -271,7 +324,6 @@ export async function addItemToMultipleListsService(uid, listIds, wordId, imageI
         translatedWord: wordData.translations[targetLang],
         translatedLang: targetLang,
         imageId,
-        note: " ",
         addedAt: now,
       });
       const langListWordCount = LangListSnap.data().wordCount || 0;
@@ -364,7 +416,7 @@ export async function removeItemFromListService(uid, listId, wordId) {
   return { removeItemFromList_ok: true, listId, wordId };
 }// end removeItemFromListService
 
-export async function updateListService(uid, listId, listName, fileBuffer = null, imageBase64 = null, imageMimeType = null, imageSizeBytes = 0, removeImage = false) {
+export async function updateListService(uid, listId, listName, fileBuffer = null, imageBase64 = null, imageMimeType = null, imageSizeBytes = 0, removeImageFlag = false) {
   if (!uid) throw new Error("updateListService: uid is required");
   if (!listId) throw new Error("updateListService: listId is required");
   //if (!listName) throw new Error("updateListService: listName is required");
@@ -372,32 +424,29 @@ export async function updateListService(uid, listId, listName, fileBuffer = null
   const listRef = db.collection("users").doc(uid).collection("lists").doc(listId);
   const listSnap = await listRef.get();
   if (!listSnap.exists) throw new Error("updateListService: List not found - " + listId);
-
-  // If buffer provided, convert to base64
-  let base64 = imageBase64;
-  let mime = imageMimeType;
-  let size = imageSizeBytes;
-
-  if (fileBuffer) {
-    base64 = bufferToBase64(fileBuffer);
-    // caller should provide mime + size via req.file; but if not, leave mime null
-    size = fileBuffer.length;
-  }
+  const listData = listSnap.data();
 
   const update = {};
+  let listUpdate = null;
+
   // If listName is provided (even empty string), set it; otherwise leave unchanged
   if (typeof listName !== "undefined") {
     update.listName = listName;
   }
 
-  if (removeImage) {
-    update.imageBase64 = null;
-    update.imageMimeType = null;
-    update.imageSizeBytes = 0;
+  if (removeImageFlag) {
+    console.log("updateListService: removeImageFlag is set to true, removing cover image.");
+    if (listData.coverImage && listData.coverImage.cloudinaryPublicId) {
+      await deleteImageFromCloudinary(listData.coverImage.cloudinaryPublicId);
+    }
+    update.coverImage = null;
   } else if (fileBuffer || imageBase64) {
-    update.imageBase64 = base64;
-    update.imageMimeType = mime;
-    update.imageSizeBytes = size;
+    console.log("updateListService: removing old cover image.");
+    if (listData.coverImage && listData.coverImage.cloudinaryPublicId) {
+      await deleteImageFromCloudinary(listData.coverImage.cloudinaryPublicId);
+    }
+    listUpdate = await addCoverImage(uid, listId, listName, fileBuffer, imageBase64, imageMimeType, imageSizeBytes);
+    update.coverImage = listUpdate.coverImage ? listUpdate.coverImage : listData.coverImage;
   }
 
   const now = new Date().toISOString();

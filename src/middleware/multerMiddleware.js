@@ -2,14 +2,11 @@ import multer from "multer";
 import dotenv from "dotenv";
 dotenv.config();
 
-const MAX_BYTES = parseInt(process.env.MAX_IMAGE_BYTES || "900000", 10);
+const MAX_BYTES = parseInt(process.env.MAX_IMAGE_BYTES || String(5 * 1024 * 1024), 10);
 
-// memory storage (do not write to disk)
-const storage = multer.memoryStorage();
-
-// max file size enforced by multer
+// max file size enforced by multer and memory storage
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: MAX_BYTES }
 });
 
