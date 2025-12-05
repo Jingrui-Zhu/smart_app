@@ -370,6 +370,7 @@ export async function addItemToMultipleListsService(uid, listIds, wordId, imageI
         translatedWord: wordData.translations[targetLang],
         translatedLang: targetLang,
         imageId,
+        imageUrl,
         addedAt: now,
       });
 
