@@ -14,8 +14,9 @@ router.post("/share", requireAuth, listController.createSharedListHandler);
 router.post("/import", requireAuth, listController.importSharedListHandler);
 // Add an item to multiple lists - POST /lists/items
 router.post("/items", requireAuth, listController.addItemToMultipleListsHandler);
+
 // Add an item to a list - POST /lists/:listId/items
-router.post("/:listId/items", requireAuth, listController.addItemToListHandler);
+//router.post("/:listId/items", requireAuth, listController.addItemToListHandler);
 
 // Get all user lists - GET /lists
 router.get("/", requireAuth, listController.getUserListsHandler);

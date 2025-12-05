@@ -161,6 +161,13 @@ export async function deleteUserListService(uid, listId) {
     await deleteImageFromCloudinary(listData.coverImage.cloudinaryPublicId);
   }
 
+  // Mark shared list as deleted if applicable
+  const sharedListSnap = await db.collection("sharedLists").doc("listId" == listId && "ownerId" == uid).get();
+  if (sharedListSnap.exists) {
+    await sharedListSnap.data().set({ isDeleted: true }, { merge: true });
+    console.log("deleteUserListService: Marked shared list as deleted for listId: ", listId);
+  }
+
   // Delete the list itself
   await listRef.delete();
   console.log("Deleted list for user: ", uid, " - listId: ", listId);
@@ -474,7 +481,6 @@ export async function createSharedListCodeService(uid, listId) {
   const shareUrl = baseUrl ? `${baseUrl.replace(/\/$/, "")}${sharePath}` : sharePath;
 
   const now = new Date().toISOString();
-  // Mark list as public and persist shared code
   const sharedId = `share_${token}_${listId}`;
   const sharedDoc = {
     sharedId: sharedId,
@@ -482,11 +488,13 @@ export async function createSharedListCodeService(uid, listId) {
     shareURL: shareUrl,
     ownerId: uid,
     listId: listId,
+    isDeleted: false,
     createdAt: now,
   }
   console.log("Creating shared list code: ", sharedId);
   await db.collection("sharedLists").doc(sharedId).set(sharedDoc);
   console.log("Shared list code created.");
+  // Mark list as public and persist shared code
   await listRef.update({ visibility: "public", updatedAt: now });
   console.log("List visibility updated to public.");
 
@@ -496,7 +504,7 @@ export async function createSharedListCodeService(uid, listId) {
 export async function getSharedListService(sharedCode) {
   if (!sharedCode) throw new Error("getSharedListService: sharedCode is required");
 
-  // don't know how to decypher ownerId and listId from sharedCode alone without querying the collection
+  // don't know how to decypher ownerId and listId from sharedCode alone without querying the whole collection
   /*
   let uid = null;
   let listId = null;
@@ -533,6 +541,9 @@ export async function getSharedListService(sharedCode) {
   const shared = await db.collection("sharedLists").where("sharedCode", "==", sharedCode).limit(1).get();
   if (shared.empty) throw new Error("getSharedListService: Shared list not found");
   const sharedData = shared.docs[0].data();
+  if (sharedData.isDeleted) {
+    return { getSharedList_ok: false, message: "getSharedListService: Shared list has been deleted", ...sharedData };
+  }
   const uid = sharedData.ownerId;
   const listId = sharedData.listId;
   const listSnap = await db.collection("users").doc(uid).collection("lists").doc(listId).get();

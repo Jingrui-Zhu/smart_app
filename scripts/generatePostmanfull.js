@@ -352,8 +352,8 @@ async function main() {
       ],
       body: {
         mode: "raw", raw: JSON.stringify({ wordId: "{{wordId}}", imageId: "{{imageId}}", listIds: ["{{listId}}"] }),
-        url: { raw: `${baseUrl}/lists/items`, host: ["{{baseUrl}}"], path: ["lists", "items"] },
-      }
+      },
+      url: { raw: `${baseUrl}/lists/items`, host: ["{{baseUrl}}"], path: ["lists", "items"] },
     }
   });
 
@@ -373,10 +373,10 @@ async function main() {
           { key: "listName", value: "My Vocab Updated", type: "text" },
           //{ key: "removeImage", value: "false", type: "text" }
         ]
-          /*
-          mode: "raw",
-          raw: JSON.stringify({ listName: "My Vocab Updated" })
-          */
+        /*
+        mode: "raw",
+        raw: JSON.stringify({ listName: "My Vocab Updated" })
+        */
       },
       url: { raw: `${baseUrl}/lists/{{listId}}`, host: ["{{baseUrl}}"], path: ["lists", "{{listId}}"] },
     }

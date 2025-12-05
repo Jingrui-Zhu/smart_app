@@ -58,7 +58,7 @@ export async function createUserService(email, password, name, preferredLang, av
         }
         throw new Error(`Failed to write user profile: ${err.message}`);
     }
-
+/*
     // create a default favourite list at user creation
     const listId = `default_favourite_${userRecord.uid}`;
     const listDoc = {
@@ -76,7 +76,7 @@ export async function createUserService(email, password, name, preferredLang, av
     console.log("Creating user word list: ", listId);
     await db.collection("users").doc(userRecord.uid).collection("lists").doc(listId).set(listDoc);
     console.log("User word list inserted.");
-
+*/
     return { createUser_ok: true, user: { uid: userDoc.uid, ...userDoc } };
 }// end createUserService
 
