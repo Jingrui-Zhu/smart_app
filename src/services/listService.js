@@ -182,8 +182,13 @@ export async function getAllItemsInListService(uid, listId) {
   const itemsSnap = await db.collection("users").doc(uid).collection("lists").doc(listId).collection("items").get();
   const items = itemsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   console.log("Retrieved items for user: ", uid, " - listId: ", listId, " - count: ", items.length);
+  const message = "Retrieved " + items.length + " items from list.";
+  
+  // Dynamically update wordCount in the list document
+  await db.collection("users").doc(uid).collection("lists").doc(listId).update({ wordCount: items.length });
+  console.log("Updated wordCount for list: ", listId, " to ", items.length);
 
-  return { getAllItemsInList_ok: true, listId, items };
+  return { getAllItemsInList_ok: true, listId, message, items };
 }// end getAllItemsInListService
 
 /*
