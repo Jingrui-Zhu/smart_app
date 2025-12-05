@@ -300,6 +300,7 @@ export async function addItemToMultipleListsService(uid, listIds, wordId, imageI
   if (!imageSnap.exists) throw new Error("addItemToMultipleListsService: image not found - " + imageId);
   const imageData = imageSnap.data();
   const targetLang = imageData.targetLang;
+  const imageUrl = imageData.imageUrl;
 
   const wordRef = db.collection("words").doc(wordId);
   const wordSnap = await wordRef.get();
@@ -331,6 +332,7 @@ export async function addItemToMultipleListsService(uid, listIds, wordId, imageI
         translatedWord: wordData.translations[targetLang],
         translatedLang: targetLang,
         imageId,
+        imageUrl,
         addedAt: now,
       });
       const langListWordCount = LangListSnap.data().wordCount || 0;
