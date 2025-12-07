@@ -161,12 +161,14 @@ export async function deleteUserListService(uid, listId) {
     await deleteImageFromCloudinary(listData.coverImage.cloudinaryPublicId);
   }
 
-  // Mark shared list as deleted if applicable
-  const sharedListSnap = await db.collection("sharedLists").doc("listId" == listId && "ownerId" == uid).get();
-  if (sharedListSnap.exists) {
-    await sharedListSnap.data().set({ isDeleted: true }, { merge: true });
-    console.log("deleteUserListService: Marked shared list as deleted for listId: ", listId);
+  const sharedListRef = db.collection("sharedLists");
+  const sharedListSnap = await sharedListRef.where("ownerId", "==", uid).where("listId", "==", listId).get();
+  const sharedListData = sharedListSnap.docs.length > 0 ? sharedListSnap.docs[0] : null;
+  if (sharedListData !== null) {
+    await sharedListData.ref.update({ isDeleted: true });
+    console.log("Marked shared lists as deleted for user: ", uid, " - listId: ", listId);
   }
+  // Mark shared list as deleted
 
   // Delete the list itself
   await listRef.delete();
@@ -183,7 +185,7 @@ export async function getAllItemsInListService(uid, listId) {
   const items = itemsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   console.log("Retrieved items for user: ", uid, " - listId: ", listId, " - count: ", items.length);
   const message = "Retrieved " + items.length + " items from list.";
-  
+
   // Dynamically update wordCount in the list document
   await db.collection("users").doc(uid).collection("lists").doc(listId).update({ wordCount: items.length });
   console.log("Updated wordCount for list: ", listId, " to ", items.length);
