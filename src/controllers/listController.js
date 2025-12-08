@@ -142,7 +142,7 @@ export const updateListHandler = async (req, res) => {
         let imageBase64 = null;
         let imageMimeType = null;
         let imageSizeBytes = 0;
-        let removeImageFlag = req.body.removeImage || false;
+        let removeImageFlag = removeImage === true || removeImage === "true";
 
         if (req.file) {
             fileBuffer = req.file.buffer;
