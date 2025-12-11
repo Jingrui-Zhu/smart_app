@@ -6,7 +6,7 @@ import { MAX_BYTES } from "../middleware/multerMiddleware.js";
 export const createImageHandler = async (req, res) => {
     try {
         const uid = req.user?.uid;
-        const { objectName, accuracy, targetLang } = req.body;
+        const { objectName, accuracy, targetLang, x, y, width, height } = req.body;
 
         // handle image
         let fileBuffer = null;
@@ -30,7 +30,7 @@ export const createImageHandler = async (req, res) => {
             return res.json({ error: "No image provided (file or imageBase64)" });
         }
 
-        const result = await imageService.createImageService(uid, fileBuffer, imageBase64, imageMimeType, imageSizeBytes, objectName, accuracy, targetLang);
+        const result = await imageService.createImageService(uid, fileBuffer, imageBase64, imageMimeType, imageSizeBytes, objectName, accuracy, targetLang, x, y, width, height);
         if (result.createImage_ok === false) {
             return res.json({ message: "image already exists", ...result });
         }

@@ -11,7 +11,7 @@
     },
     {
       "key": "idToken",
-      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjdjNzQ5NTFmNjBhMDE0NzE3ZjFlMzA4ZDZiMjgwZjQ4ZjFlODhmZGEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjQ5MzE0MzIsInVzZXJfaWQiOiI2YjFFZWVSbHcwaG55QXVLZzhRY0F6NVZ6RUEzIiwic3ViIjoiNmIxRWVlUmx3MGhueUF1S2c4UWNBejVWekVBMyIsImlhdCI6MTc2NDkzMTQzMiwiZXhwIjoxNzY0OTM1MDMyLCJlbWFpbCI6InRlc3QudXNlcjRAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXI0QGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.YYp8U86KfuiJ5MHi1AFJPI5qxmJqGuDbI7-snpqpc5ldsnQXkt_hxAtfSck1MfZKLCC8NU97bk-thEDuvh-7IwWuEqhIvXN5KRkSTqyY77JPkUB2zdOycj8hcBPSiL6QxfB6OY0q1Wt8ytzCza0DvuaJ9elyvr89fPgy1BiaiFw5UBX_l1hdMZljfiQF3mlPdxj3wcrqjUVt4FoDQMoTF1Ir_E4TirPDaqBkobV4-637s-7-TRkMbBHGtV8vD_XnFtu8oNakiobNN7A0xuXHZr5u087C5cxhObQWxiY-RzbYKrHRloqSauIAtN6D3Bd3MjoHss9LeYhpqazP3GsKOQ"
+      "value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjM4MTFiMDdmMjhiODQxZjRiNDllNDgyNTg1ZmQ2NmQ1NWUzOGRiNWQiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGVtbyBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Zpc3VhbC1kaWN0aW9uYXJ5LWRmNzg2IiwiYXVkIjoidmlzdWFsLWRpY3Rpb25hcnktZGY3ODYiLCJhdXRoX3RpbWUiOjE3NjU0ODQxODAsInVzZXJfaWQiOiI2YjFFZWVSbHcwaG55QXVLZzhRY0F6NVZ6RUEzIiwic3ViIjoiNmIxRWVlUmx3MGhueUF1S2c4UWNBejVWekVBMyIsImlhdCI6MTc2NTQ4NDE4MCwiZXhwIjoxNzY1NDg3NzgwLCJlbWFpbCI6InRlc3QudXNlcjRAZXhhbXBsZS5pdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0LnVzZXI0QGV4YW1wbGUuaXQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.Ey3W60QV3tiSRB2Fw-7h651-jcCnbYHWCwTCuxVLEqbZstWKi6Qb08szl-ZnpW-ytolJ5Be30hjYmWYxBb8p68vb4hWLFypqo1Kd4GalxK3tSJRdtcwJUUMOSGfdpiHlqtV66fZeqE2KY_mWEXzLbQsYXogbTz6DdkMT2K8PN7NQaKRZZrvlNxiNUjYctvIQLf2pjydZgSaaVjebAsla25fyLhXZWmjSyJdh4NDMyT5TD6tMyEZ13uUElvz-75Oj0d4KdKPVplR0GXvOI6fIC3igWYi13tHf13isXCLPtmCWNfl8em6vYprRxff510p49AyWC0WRwVnF_mcTh_1hew"
     },
     {
       "key": "email",
@@ -257,6 +257,26 @@
             {
               "key": "targetLang",
               "value": "it",
+              "type": "text"
+            },
+            {
+              "key": "x",
+              "value": "100",
+              "type": "text"
+            },
+            {
+              "key": "y",
+              "value": "150",
+              "type": "text"
+            },
+            {
+              "key": "width",
+              "value": "300",
+              "type": "text"
+            },
+            {
+              "key": "height",
+              "value": "200",
               "type": "text"
             }
           ]

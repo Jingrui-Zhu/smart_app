@@ -182,7 +182,11 @@ async function main() {
           { key: "image", type: "file", src: exampleImagePath },
           { key: "objectName", value: "seagull", type: "text" },
           { key: "accuracy", value: "0.95", type: "text" },
-          { key: "targetLang", value: "it", type: "text" }
+          { key: "targetLang", value: "it", type: "text" },
+          { key: "x", value: "100", type: "text" },
+          { key: "y", value: "150", type: "text" },
+          { key: "width", value: "300", type: "text" },
+          { key: "height", value: "200", type: "text" }
         ]
       },
       url: { raw: `${baseUrl}/images`, host: ["{{baseUrl}}"], path: ["images"] }

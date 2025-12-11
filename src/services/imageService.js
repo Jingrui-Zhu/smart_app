@@ -11,10 +11,11 @@ function bufferToBase64(buf) {
 */
 
 // store partial image info, image metadata only
-export async function createImageService(uid, fileBuffer = null, imageBase64 = null, imageMimeType = null, imageSizeBytes = null, objectName, accuracy = null, targetLang) {
+export async function createImageService(uid, fileBuffer = null, imageBase64 = null, imageMimeType = null, imageSizeBytes = null, objectName, accuracy = null, targetLang, x = 0, y = 0, width = 0, height = 0) {
     if (!objectName) throw new Error("createImageService: objectName is required");
     if (!uid) throw new Error("createImageService: uid is required");
     if (!targetLang) throw new Error("createImageService: targetLang is required");
+    if (x == 0 && y == 0 && width == 0 && height == 0) throw new Error("createImageService: x, y, width, height are required - no object selected");
 
     // preliminary check to ensure user exists
     const userRef = db.collection("users").doc(uid);
@@ -65,6 +66,10 @@ export async function createImageService(uid, fileBuffer = null, imageBase64 = n
         imageUrl: uploadResult ? uploadResult.secure_url : null,
         cloudinaryPublicId: uploadResult ? uploadResult.public_id : null, // this should be the same as imageId
         imageSizeBytes: uploadResult ? uploadResult.bytes : imageSizeBytes,
+        x: x,
+        y: y,
+        width: width,
+        height: height,
         status: "uploaded",
         createdAt: now,
     };
