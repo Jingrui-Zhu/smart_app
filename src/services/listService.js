@@ -182,15 +182,33 @@ export async function getAllItemsInListService(uid, listId) {
   if (!listId) throw new Error("getAllItemsInListService: listId is required");
 
   const itemsSnap = await db.collection("users").doc(uid).collection("lists").doc(listId).collection("items").get();
-  const items = itemsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const items = itemsSnap.docs.map(doc => ({ ...doc.data() }));
   console.log("Retrieved items for user: ", uid, " - listId: ", listId, " - count: ", items.length);
-  const message = "Retrieved " + items.length + " items from list.";
 
-  // Dynamically update wordCount in the list document
-  await db.collection("users").doc(uid).collection("lists").doc(listId).update({ wordCount: items.length });
-  console.log("Updated wordCount for list: ", listId, " to ", items.length);
+  // Enrich each item with selected fields from the referenced image document
+  const userRef = db.collection("users").doc(uid);
+  // for each item, fetch image data if imageId exists
+  const enrichedItems = await Promise.all(items.map(async (item) => {
+    try {
+      if (!item.imageId) return item;
+      const imageRef = userRef.collection("images").doc(item.imageId);
+      const imageSnap = await imageRef.get();
+      if (!imageSnap.exists) return item;
+      const imageData = imageSnap.data();
+      const selected = {
+        x: imageData.x || 0,
+        y: imageData.y || 0,
+        width: imageData.width || 0,
+        height: imageData.height || 0,
+      };
+      return { ...item, obj_coordinates: selected };
+    } catch (e) {
+      console.error("Failed to enrich item with image data:", item.imageId, e);
+      return item;
+    }
+  }));
 
-  return { getAllItemsInList_ok: true, listId, message, items };
+  return { getAllItemsInList_ok: true, listId, items: enrichedItems };
 }// end getAllItemsInListService
 
 /*
