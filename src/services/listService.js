@@ -308,6 +308,10 @@ export async function addItemToMultipleListsService(uid, listIds, wordId, imageI
   const imageData = imageSnap.data();
   const targetLang = imageData.targetLang;
   const imageUrl = imageData.imageUrl;
+  const x = imageData.x || 0;
+  const y = imageData.y || 0;
+  const width = imageData.width || 0;
+  const height = imageData.height || 0;
 
   const wordRef = db.collection("words").doc(wordId);
   const wordSnap = await wordRef.get();
@@ -340,6 +344,10 @@ export async function addItemToMultipleListsService(uid, listIds, wordId, imageI
         translatedLang: targetLang,
         imageId,
         imageUrl,
+        x,
+        y,
+        width,
+        height,
         addedAt: now,
       });
       const langListWordCount = LangListSnap.data().wordCount || 0;
