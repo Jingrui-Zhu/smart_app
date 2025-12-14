@@ -594,8 +594,9 @@ export async function importSharedListService(uid, sharedCode) {
     importedFrom: ownerId,
     imported: true,
     importedAt: now,
-    updatedAt: now,
-    wordCount: items.length
+    wordCount: items.length,
+    coverImage: list.coverImage || null,
+    updatedAt: now
   };
   console.log("Creating imported list: ", newListId);
   await db.collection("users").doc(uid).collection("lists").doc(newListId).set(importedData);
